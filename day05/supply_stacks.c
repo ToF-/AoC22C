@@ -18,7 +18,7 @@ int pop(char stack[STACK_SIZE]) {
     for(int i=1; i<l; i++) {
         stack[i-1] = stack[i];
     }
-    stack[l] = '\0';
+    stack[l-1] = '\0';
     return result;
 }
 
@@ -31,11 +31,22 @@ void push(char stack[STACK_SIZE], char c) {
     stack[0] = c;
 }
 
+void reverse(char stack[STACK_SIZE], int n) {
+    int i = 0;
+    int j = n-1;
+    while(j > i) {
+        int temp = stack[i];
+        stack[i] = stack[j];
+        stack[j] = temp;
+        i++;
+        j--;
+    }
+}
 int main(int argc, char *argv[]) {
     FILE *puzzleFile;
     char line[LINE_MAX];
 
-    char stacks[MAX_STACKS][STACK_SIZE] = { "","","","","","","","","" };
+    char stacks[MAX_STACKS+1][STACK_SIZE] = { "","","","","","","","","","" };
 
     puzzleFile = fopen(argv[1], "r");
     if(puzzleFile == NULL) {
@@ -54,7 +65,7 @@ int main(int argc, char *argv[]) {
         if(!initialized) {
             for(int i=1; i<strlen(line); i+=4) {
                 char c = line[i];
-                int  s = (i-1)/4;
+                int  s = (i/4)+1;
                 if(c != ' ') {
                     append(stacks[s], c);
                 }
@@ -65,15 +76,16 @@ int main(int argc, char *argv[]) {
             if(sscanf(line, "move %d from %d to %d", &n, &srce, &dest) != 3) {
                 fprintf(stderr,"sorry can't parse %s\n", line);
             }
-            printf("%s %s\n", stacks[srce], stacks[dest]);
             for(int i=0; i<n; i++) {
                 int v = pop(stacks[srce]);
                 push(stacks[dest],v);
             }
-            printf("%s %s\n", stacks[srce], stacks[dest]);
-            getchar();
+            reverse(stacks[dest], n);
         }
     }
+    for(int i=1; i<MAX_STACKS+1; i++) 
+        printf("%c", stacks[i][0]);
+    printf("\n");
     fclose(puzzleFile);
     return 0;
 }
