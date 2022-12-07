@@ -22,7 +22,7 @@ void print_file_system(struct node* node, int level) {
         printf("  ");
     switch(node->type) {
         case DIR_NODE:
-            strcpy(info, "(dir)");
+            sprintf(info, "(dir) [%ld]", node->size);
             break;
         case FILE_NODE:
             sprintf(info, "(file, size=%ld)", node->size);
@@ -60,8 +60,13 @@ struct node *add_node(struct node *parent, char *name, long size) {
         node->parent->children = node;
     } else {
         struct node *last_child = node->parent->children;
-        while(last_child->siblings != NULL)
+        while(last_child->siblings != NULL) {
+            if(!strcmp(last_child->name, name)) {
+                free(node);
+                return last_child;
+            }
             last_child = last_child->siblings;
+        }
         last_child->siblings = node;
     }
     return node;
@@ -83,6 +88,20 @@ struct node *change_dir(struct node *current, char *name) {
     }
     return NULL;
 }
+
+long compute_size(struct node *node) {
+    long size = 0;
+    if(node->size != -1)
+        return node->size;
+    struct node *child = node->children;
+    while(child) {
+        size += compute_size(child);
+        child = child->siblings;
+    }
+    node->size = size;
+    return node->size;
+}
+
 void destroy_node(struct node* node) {
     if(node == NULL)
         return;
@@ -163,6 +182,7 @@ int main(int argc, char *argv[]) {
         }
     }
     fclose(puzzleFile);
+    compute_size(file_system->children);
     print_file_system(file_system->children,0);
     return 0;
 }
