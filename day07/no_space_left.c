@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
-const int LINE_MAX = 50;
+#include <limits.h>
 
 enum node_type { DIR_NODE, FILE_NODE };
 
@@ -102,6 +101,32 @@ long compute_size(struct node *node) {
     return node->size;
 }
 
+long sum_dir_at_most(struct node *node, long limit) {
+    long sum = 0;
+    while(node != NULL) {
+        if(node->type == DIR_NODE) {
+            if(node->size <= limit) {
+                sum += node->size;
+            }
+        }
+        sum += sum_dir_at_most(node->children, limit);
+        node = node->siblings;
+    }
+    return sum;
+}
+
+void find_smallest_at_least(struct node *node, long limit, long *min) {
+    while(node != NULL) {
+        if(node->type == DIR_NODE) {
+            if((node->size >= limit) && (node->size < *min)) {
+                    *min = node->size;
+            }
+        }
+        find_smallest_at_least(node->children, limit, min);
+        node = node->siblings;
+    }
+}
+
 void destroy_node(struct node* node) {
     if(node == NULL)
         return;
@@ -157,7 +182,6 @@ int main(int argc, char *argv[]) {
     current = file_system;
     while(fgets(line, LINE_MAX, puzzleFile)) {
         line[strcspn(line, "\n")] = 0;
-        printf("%s\n", line);
         const char *sep = " ";
         char *token = strtok(line, sep);
         if(!strcmp(token, "$")) {
@@ -183,6 +207,16 @@ int main(int argc, char *argv[]) {
     }
     fclose(puzzleFile);
     compute_size(file_system->children);
-    print_file_system(file_system->children,0);
+    long sum = sum_dir_at_most(file_system->children, 100000);
+    printf("%ld\n", sum);
+    long outermost_size = file_system->children->size;
+    printf("size of outermost dir: %ld\n", outermost_size);
+    long unused_space = 70000000L - outermost_size; 
+    printf("unused space:          %ld\n", unused_space);
+    long delete_at_least = 30000000L - unused_space;
+    printf("delete at least:       %ld\n", delete_at_least);
+    long min = LONG_MAX;
+    find_smallest_at_least(file_system->children, delete_at_least, &min);
+    printf("smallest at least:     %ld\n", min);
     return 0;
 }
