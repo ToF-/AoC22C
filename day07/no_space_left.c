@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 const int LINE_MAX = 50;
 
@@ -18,7 +19,7 @@ struct node {
 void print_file_system(struct node* node, int level) {
     char info[LINE_MAX];
     for(int i=0; i < level; i++)
-        printf("\t");
+        printf("  ");
     switch(node->type) {
         case DIR_NODE:
             strcpy(info, "(dir)");
@@ -70,12 +71,15 @@ struct node *change_dir(struct node *current, char *name) {
     struct node *node;
     if(current->type != DIR_NODE)
         return NULL;
+    if(!strcmp(name, "..")) {
+        return current->parent;
+    }
     node = current->children;
     while(node != NULL) {
-        if(!strcmp(node->name, name))
+        if(!strcmp(node->name, name)) {
             return node;
-        else
-            node = node->siblings;
+        }
+        node = node->siblings;
     }
     return NULL;
 }
@@ -92,21 +96,35 @@ int main(int argc, char *argv[]) {
     FILE *puzzleFile;
     char line[LINE_MAX];
 
-    struct node *file_system = NULL;
+    struct node *file_system = (struct node *)malloc(sizeof(struct node));
     struct node *current;
 
     if(argc == 1) {
         file_system = new_dir(file_system, "/");
         current = file_system;
-        current = add_node(current, "a", -1);
         struct node *dir = current;
+        current = add_node(dir, "a", -1);
         current = add_node(dir, "b.txt", 14848514);
         current = add_node(dir, "c.dat", 8504156);
         current = add_node(dir, "d", -1);
         current = file_system;
         current = change_dir(current, "a");
+	dir = current;
+	current = add_node(dir, "e", -1);
+	current = add_node(dir, "f", 29116);
+	current = add_node(dir, "g", 2557);
+	current = add_node(dir, "h.lst", 62596);
+	current = change_dir(dir, "e");
+	dir = current;
+	current = add_node(dir, "i", 584);
+	dir = dir->parent;
+	dir = dir->parent;
+	dir = change_dir(dir, "d");
+	current = add_node(dir, "j", 4060174);
+	current = add_node(dir, "d.log", 8033020);
+	current = add_node(dir, "d.ext", 5626152);
+	current = add_node(dir, "k", 7214296);
         print_file_system(file_system, 0);
-        print_file_system(current,0);
         destroy_node(file_system);
         return 0;
     }
@@ -115,8 +133,36 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "can't open file %s\n", argv[1]);
         return 1;
     }
+    int ls_in_progress = false;
+    add_node(file_system, "/", -1);
+    current = file_system;
     while(fgets(line, LINE_MAX, puzzleFile)) {
+        line[strcspn(line, "\n")] = 0;
+        printf("%s\n", line);
+        const char *sep = " ";
+        char *token = strtok(line, sep);
+        if(!strcmp(token, "$")) {
+            ls_in_progress = false;
+            token = strtok(NULL, sep);
+            if (!strcmp(token, "cd")) {
+                token = strtok(NULL, sep);
+                current = change_dir(current, token);
+            } else if(!strcmp(token, "ls")) {
+                ls_in_progress = true; 
+            }
+        } else {
+            if(!strcmp(token, "dir")) {
+                token = strtok(NULL, sep);
+                add_node(current, token, -1);
+            }else{
+                char *end;
+                long size = strtol(token, &end, 10);
+                token = strtok(NULL, sep);
+                add_node(current, token, size);
+            }
+        }
     }
     fclose(puzzleFile);
+    print_file_system(file_system->children,0);
     return 0;
 }
