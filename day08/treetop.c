@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
 
     FILE *puzzle_file;
     char line[LENGTH+1];
-    char forest[LENGTH][LENGTH];
+    int forest[LENGTH][LENGTH];
     bool visible[LENGTH][LENGTH];
     int  scenic[LENGTH][LENGTH];
     if(argc==1) {
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
         line[strcspn(line, "\n")] = 0;
         int l = strlen(line);
         for(int i=0; i<l; i++)
-            forest[max_row][i] = line[i];
+            forest[max_row][i] = line[i]-'0';
         max_row++;
         max_col = l > max_col ? l : max_col;
     }
@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
         for(int col=0; col<max_col; col++) {
             int tree;
             int start;
-            int up = 1; 
+            int up = 0; 
             int down = 0;
             int left = 0;
             int right = 0;
@@ -87,41 +87,36 @@ int main(int argc, char *argv[]) {
                 scenic[row][col] = 0;
             else {
                 start = forest[row][col];
-                int last  = 0;
+                printf("start: (%d,%d) = %d\n", row, col, start);
                 for(int r = row-1; r>=0; r--) {
                     tree = forest[r][col];
-                    int is_visible = tree > last && tree <= start;
-                    if(is_visible)
-                        up++;
-                    else
+                    printf("\tup: (%d,%d) = %d\n", r, col, tree);
+                    up++;
+                    if(tree >= start)
                         break;
-                    last = tree;
                 }
                 for(int r = row+1; r<max_row; r++) {
                     tree = forest[r][col];
-                    if(tree <= start)
-                        down++;
+                    printf("\tdown: (%d,%d) = %d\n", r, col, tree);
+                    down++;
                     if(tree >= start)
                         break;
-                    start = tree;
                 }
                 for(int c = col-1; c>=0; c--) {
                     tree = forest[row][c];
-                    if(tree <= start)
-                        left++;
+                    printf("\tleft: (%d,%d) = %d\n", row, c, tree);
+                    left++;
                     if(tree >= start)
                         break;
-                    start = tree;
                 }
                 for(int c = col+1; c<max_row; c++) {
                     tree = forest[row][c];
-                    if(right <= start)
-                        down++;
+                    printf("\tright: (%d,%d) = %d\n", row, c, tree);
+                    right++;
                     if(tree >= start)
                         break;
-                    start = tree;
                 }
-                printf("(%d,%d): %d %d %d %d\n", row, col, up, down, left, right);
+                printf("\n(%d,%d): %d %d %d %d\n", row, col, up, down, left, right);
             }
             scenic[row][col] = up * down * left * right;
         }
