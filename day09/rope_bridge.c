@@ -6,7 +6,7 @@
 
 const int MAX_INSTRUCTIONS = 2000;
 
-const int MAX_KNOTS = 2;
+const int MAX_KNOTS = 10;
 
 struct instruction{
     char direction;
@@ -32,22 +32,20 @@ int compare(const void *a, const void *b) {
  *   TH. -> T.
  *
  */
-void pull(struct location target, struct location *head, struct location *tail) {
-    printf("pulling (%d,%d)(%d,%d) to target (%d,%d)\n", head->x, head->y, tail->x, tail->y, target.x, target.y);
+void pull(struct location *target, struct location *head, struct location *tail) {
+    printf("(%d,%d)", target->x, target->y);
     struct location temp = *head;
-    head->x = target.x;
-    head->y = target.y;
+    head->x = target->x;
+    head->y = target->y;
     int dx = head->x - tail->x;
     int dy = head->y - tail->y;
     int dx2 = dx * dx;
     int dy2 = dy * dy;
-    if((dx2+dy2) > 1)
+    if(dx2 > 1 || dy2 > 1)
     {
         tail->x = temp.x;
         tail->y = temp.y;
     }
-    printf("result:(%d,%d)(%d,%d)\n", head->x, head->y, tail->x, tail->y);
-    getchar();
 }
 
 
@@ -99,7 +97,10 @@ int main(int argc, char *argv[]) {
             struct location target;
             target.x = rope[0].x + dx;
             target.y = rope[0].y + dy;
-            pull(target, &rope[0], &rope[1]);
+            pull(&target, &rope[0], &rope[1]);
+            int k;
+            for(k=0; k<MAX_KNOTS-2; k++)
+                pull(&rope[k],&rope[k+1],&rope[k+2]);
             int index = 0;
             for(index = 0; index < location_max; index++) {
                 if(locations[index].x == rope[MAX_KNOTS-1].x && locations[index].y == rope[MAX_KNOTS-1].y) {
