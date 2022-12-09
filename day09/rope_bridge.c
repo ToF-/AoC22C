@@ -6,7 +6,7 @@
 
 const int MAX_INSTRUCTIONS = 2000;
 
-const int MAX_KNOTS = 10;
+const int MAX_KNOTS = 2;
 
 struct instruction{
     char direction;
@@ -25,22 +25,31 @@ int compare(const void *a, const void *b) {
     if(arg1.x < arg2.y) return -1;
     return(arg1.y - arg2.y);
 }
-
-void move(struct location target, struct location [MAX_KNOTS] rope) {
-    struct location previous = rope[0];
-    rope[0].x = target.x;
-    rope[0].y = target.y;
-    int k = 0;
-    do {
-        int diffx = rope[k]->x - rope[k+rope[k+1->x;
-        int diffy = rope[k]->y - previous->y;
-        int diffx2 = diffx * diffx;
-        int diffy2 = diffy * diffy;
-        if(diffx2 > 1 || diffy2 > 1) {
-            rope[k+1]->x = rope[k].x;
-            rope[k+1]->y = rope[k].y;
+/*
+ *   TH. -> T.H -> .TH
+ *
+ *           H
+ *   TH. -> T.
+ *
+ */
+void pull(struct location target, struct location *head, struct location *tail) {
+    printf("pulling (%d,%d)(%d,%d) to target (%d,%d)\n", head->x, head->y, tail->x, tail->y, target.x, target.y);
+    struct location temp = *head;
+    head->x = target.x;
+    head->y = target.y;
+    int dx = head->x - tail->x;
+    int dy = head->y - tail->y;
+    int dx2 = dx * dx;
+    int dy2 = dy * dy;
+    if((dx2+dy2) > 1)
+    {
+        tail->x = temp.x;
+        tail->y = temp.y;
     }
+    printf("result:(%d,%d)(%d,%d)\n", head->x, head->y, tail->x, tail->y);
+    getchar();
 }
+
 
 int main(int argc, char *argv[]) {
     FILE *puzzle_file;
@@ -79,12 +88,6 @@ int main(int argc, char *argv[]) {
         int length = instructions[i].length;
         char direction = instructions[i].direction;
         for(int l = 0; l < length; l++) {
-            printf("location:%d head:(%d,%d), tail:(%d,%d)\n", 
-                    location_max, 
-                    rope[0].x, 
-                    rope[0].y, 
-                    rope[MAX_KNOTS-1].x, 
-                    rope[MAX_KNOTS-1].y);
             int dx = 0;
             int dy = 0;
             switch(direction) {
@@ -96,17 +99,17 @@ int main(int argc, char *argv[]) {
             struct location target;
             target.x = rope[0].x + dx;
             target.y = rope[0].y + dy;
-            move(target, rope, MAX_KNOTS);
-            }
-            int index = -1;
-            for(int j=0; j<location_max; j++) {
-                if(rope[MAX_KNOTS-1].x == locations[j].x && rope[MAX_KNOTS-1].y == locations[j].y) {
-                    index = j;
+            pull(target, &rope[0], &rope[1]);
+            int index = 0;
+            for(index = 0; index < location_max; index++) {
+                if(locations[index].x == rope[MAX_KNOTS-1].x && locations[index].y == rope[MAX_KNOTS-1].y) {
+                    printf("same location as #%d(%d,%d)\n",index, locations[index].x, locations[index].y);
                     break;
                 }
             }
-            if(index == -1) {
-                locations[location_max] = rope[MAX_KNOTS-1];
+            if(index == location_max) {
+                locations[index] = rope[MAX_KNOTS-1];
+                printf("new location#%d %d:(%d,%d)\n", index, location_max, locations[index].x, locations[index].y);
                 location_max++;
             }
         }
