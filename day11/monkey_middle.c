@@ -38,6 +38,14 @@ void add(LIST *list, void *value) {
     list->count++;
 }
 
+void push(LIST *list, void *value) {
+    ITEM *item = malloc(sizeof(ITEM));
+    item->value = value;
+    item->next = list->items;
+    list->items = item;
+    list->count++;
+}
+
 bool pop(LIST *list, void **value) {
     assert(list);
     *value = NULL;
@@ -73,17 +81,6 @@ void destroy_list(LIST *list) {
 }
 
 enum operation { PLUS, TIMES, SQUARE };
-
-long compute(enum operation operation, long term, void *value) {
-    assert(value != NULL);
-    long *cell = value;
-    long v = *cell;
-    switch(operation) {
-        case PLUS: return v + term;
-        case TIMES: return v * term;
-        case SQUARE: return v * v;
-    }
-}
 
 typedef struct monkey {
     struct monkey **circus;
@@ -126,17 +123,30 @@ void destroy_monkey(MONKEY *monkey) {
     free(monkey);
 }
 
-bool process(MONKEY *monkey) {
-    void *cell;
-    if(!pop(monkey->list, &cell))
-        return false;
-    long level = compute(monkey->operation, monkey->term, cell) / (WORRY_LEVEL);
-    long *new_value = (long *)malloc(sizeof(long));
-    *new_value = level;
-    MONKEY *dest = (level % monkey->divisor) == 0 ? 
-        monkey->circus[monkey->dest_if_true] : 
+
+MONKEY *part1_compute(MONKEY *monkey, void *pointer) {
+    long value = *((long *)pointer);
+    long product;
+    switch(monkey->operation) {
+        case PLUS: product = value + monkey->term; break;
+        case TIMES: product = value * monkey->term; break;
+        case SQUARE: product = value * value; break;
+    }
+    long quotient = product / WORRY_LEVEL;
+    long *cell = (long *)malloc(sizeof(long));
+    *cell = quotient;
+    push(monkey->list, cell);
+    return (quotient % monkey->divisor == 0) ?
+        monkey->circus[monkey->dest_if_true] :
         monkey->circus[monkey->dest_if_false];
-    add(dest->list, new_value);
+}
+bool process(MONKEY *monkey) {
+    void *pointer;
+    if(!pop(monkey->list, &pointer))
+        return false;
+    MONKEY *dest_monkey = part1_compute(monkey, pointer);
+    pop(monkey->list, &pointer);
+    add(dest_monkey->list, pointer);
     monkey->business++;
     return true;
 }
@@ -173,21 +183,21 @@ int main(int argc, char *argv[]) {
 #ifdef SAMPLE
     const int COUNT = 4;
     MONKEY *circus[COUNT];
-    circus[0] = new_monkey(circus, 0, 2, (long []){ 79, 98 }, TIMES, 19, 23, 2, 3);
-    circus[1] = new_monkey(circus, 1, 4, (long []){ 54, 65, 75, 74 }, PLUS, 6, 19, 2, 0);
-    circus[2] = new_monkey(circus, 2, 3, (long []){ 79, 60, 97 }, SQUARE, 0, 13, 1, 3);
-    circus[3] = new_monkey(circus, 3, 1, (long []){ 74 }, PLUS, 3, 17, 0, 1);
+    circus[0] = new_monkey(circus, 0, 2, (long []){ 79, 98         }, TIMES, 19, 23, 2, 3);
+    circus[1] = new_monkey(circus, 1, 4, (long []){ 54, 65, 75, 74 }, PLUS,   6, 19, 2, 0);
+    circus[2] = new_monkey(circus, 2, 3, (long []){ 79, 60, 97     }, SQUARE, 0, 13, 1, 3);
+    circus[3] = new_monkey(circus, 3, 1, (long []){ 74             }, PLUS,   3, 17, 0, 1);
 #else
     const int COUNT = 8;
     MONKEY *circus[COUNT];
-    circus[0] = new_monkey(circus, 0, 6, (long []) { 50, 70, 89, 75, 66, 66         }, TIMES,  5   ,2,  2, 1);
-    circus[1] = new_monkey(circus, 1, 1, (long []) { 85                             }, SQUARE, 0   ,7,  3, 6);
-    circus[2] = new_monkey(circus, 2, 8, (long []) { 66, 51, 71, 76, 58, 55, 58, 60 }, PLUS,   1   ,13, 1, 3);
-    circus[3] = new_monkey(circus, 3, 4, (long []) { 79, 52, 55, 51                 }, PLUS,   6   ,3,  6, 4);
-    circus[4] = new_monkey(circus, 4, 2, (long []) { 69, 92                         }, TIMES,  17  ,19, 7, 5);
-    circus[5] = new_monkey(circus, 5, 7, (long []) { 71, 76, 73, 98, 67, 79, 99     }, PLUS,   8   ,5,  0, 2);
-    circus[6] = new_monkey(circus, 6, 5, (long []) { 82, 76, 69, 69, 57             }, PLUS,   7   ,11, 7, 4);
-    circus[7] = new_monkey(circus, 7, 3, (long []) { 65, 79, 86                     }, PLUS,   5   ,17, 5, 0);
+    circus[0] = new_monkey(circus, 0, 6, (long []) { 50, 70, 89, 75, 66, 66         }, TIMES,  5,  2, 2, 1);
+    circus[1] = new_monkey(circus, 1, 1, (long []) { 85                             }, SQUARE, 0,  7, 3, 6);
+    circus[2] = new_monkey(circus, 2, 8, (long []) { 66, 51, 71, 76, 58, 55, 58, 60 }, PLUS,   1, 13, 1, 3);
+    circus[3] = new_monkey(circus, 3, 4, (long []) { 79, 52, 55, 51                 }, PLUS,   6,  3, 6, 4);
+    circus[4] = new_monkey(circus, 4, 2, (long []) { 69, 92                         }, TIMES, 17, 19, 7, 5);
+    circus[5] = new_monkey(circus, 5, 7, (long []) { 71, 76, 73, 98, 67, 79, 99     }, PLUS,   8,  5, 0, 2);
+    circus[6] = new_monkey(circus, 6, 5, (long []) { 82, 76, 69, 69, 57             }, PLUS,   7, 11, 7, 4);
+    circus[7] = new_monkey(circus, 7, 3, (long []) { 65, 79, 86                     }, PLUS,   5, 17, 5, 0);
 #endif
     for(int i=0; i<20; i++) {
         a_round(COUNT, circus);
