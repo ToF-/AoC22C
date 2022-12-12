@@ -3,15 +3,55 @@
 #include <stdbool.h>
 #include <string.h>
 #include <assert.h>
+#include <limits.h>
 
-#define SAMPLE
+#define PUZZLE
 #ifdef SAMPLE
 #else
 #endif
 #define PART1
 #define WORRY_LEVEL 3
 
+const long MCD = 100; // 2*3*5*7*11*13*17*19;
+
+long Max_result = 0;
+
 const int MAX_ITEMS = 50;
+
+typedef struct number {
+    long factor;
+    long remainder;
+} NUMBER;
+
+void print_number(NUMBER number) {
+    printf("(%ld,%ld)", number.factor, number.remainder);
+}
+
+NUMBER long_to_number(long n) {
+    NUMBER result;
+    result.factor = n / MCD;
+    result.remainder = n % MCD;
+    return result;
+}
+
+NUMBER add_number(NUMBER a, NUMBER b) {
+    NUMBER result = long_to_number(a.remainder + b.remainder);
+    result.factor += a.factor + b.factor;
+    return result;
+}
+
+NUMBER mult_number(NUMBER a, NUMBER b) {
+    long fa = a.factor;
+    long fb = b.factor;
+    long ra = a.remainder;
+    long rb = b.remainder;
+    NUMBER rr = long_to_number(ra * rb);
+    NUMBER farb = long_to_number(fa * rb);
+    NUMBER fbra = long_to_number(fb * ra);
+    NUMBER product = add_number(rr, add_number(farb, fbra));
+    product.factor+= fa+fb;
+    return product;
+}
 
 typedef struct item {
     void *value;
@@ -60,6 +100,7 @@ bool pop(LIST *list, void **value) {
     return true;
 }
 
+#ifdef PART1
 LIST *new_list(int count, long values[MAX_ITEMS]) {
     LIST *list = malloc(sizeof(LIST));
     for(int i=0; i<count; i++) {
@@ -69,6 +110,7 @@ LIST *new_list(int count, long values[MAX_ITEMS]) {
     }
     return list;
 }
+#endif
 
 void destroy_list(LIST *list) {
     assert(list);
@@ -132,11 +174,13 @@ MONKEY *part1_compute(MONKEY *monkey, void *pointer) {
         case TIMES: product = value * monkey->term; break;
         case SQUARE: product = value * value; break;
     }
-    long quotient = product / WORRY_LEVEL;
+    long result = product / WORRY_LEVEL;
     long *cell = (long *)malloc(sizeof(long));
-    *cell = quotient;
+    if(result > Max_result)
+        Max_result = result;
+    *cell = result;
     push(monkey->list, cell);
-    return (quotient % monkey->divisor == 0) ?
+    return (result % monkey->divisor == 0) ?
         monkey->circus[monkey->dest_if_true] :
         monkey->circus[monkey->dest_if_false];
 }
@@ -180,6 +224,7 @@ void a_round(int count, MONKEY *circus[]) {
 
 
 int main(int argc, char *argv[]) {
+    Max_result = 0;
 #ifdef SAMPLE
     const int COUNT = 4;
     MONKEY *circus[COUNT];
@@ -210,6 +255,15 @@ int main(int argc, char *argv[]) {
     printf("monkey business:%ld *%ld = %ld\n", first, second, first * second);
     for(int m=0; m<COUNT; m++)
         destroy_monkey(circus[m]);
+    NUMBER n = long_to_number(MCD*3+58);
+    NUMBER m = long_to_number(MCD*2+4);
+    NUMBER o = mult_number(m,n);
+    print_number(n);
+    printf("%ld\n",n.factor*MCD+n.remainder); 
+    print_number(m);
+    printf("%ld\n",m.factor*MCD+m.remainder); 
+    print_number(o);
+    printf("%ld\n",o.factor*MCD+o.remainder); 
     return 0;
 }
 
