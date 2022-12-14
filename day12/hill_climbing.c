@@ -14,6 +14,9 @@ typedef struct {
     char *squares;
 } MAP;
 
+
+
+
 typedef struct {
     int row;
     int col;
