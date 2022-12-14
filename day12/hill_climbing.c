@@ -11,7 +11,7 @@ const int CAPACITY = MAX_ROW * MAX_COL;
 typedef struct { 
     int max_row;
     int max_col;
-    char squares[MAX_ROW][MAX_COL];
+    char *squares;
 } MAP;
 
 typedef struct {
@@ -138,30 +138,38 @@ void destroy_heap(HEAP *heap) {
 }
 
 void read_puzzle(FILE *puzzle_file, MAP *map) {
-    char line[MAX_COL];
-    int col;
+    char line[MAX_ROW][MAX_COL];
     int row = 0;
-    while(fgets(line, MAX_COL, puzzle_file)) {
-        line[strcspn(line, "\n")] = 0;
-        for(col = 0; col < strlen(line); col++) {
-            map->squares[row][col] = line[col];
+    while(fgets(line[row], MAX_COL, puzzle_file)) {
+        line[row][strcspn(line[row], "\n")] = 0;
+        row++;
+        map->max_col = strlen(line[row]);
+    }
+    map->max_row = row;
+    map->squares = malloc(sizeof(char)*map->max_row*map->max_col);
+    for(int row = 0; row < map->max_row; row++) {
+        for(int col = 0; col < map->max_col; col++) {
+            map->squares[row*map->max_col] = line[row][col];
         }
         row++;
     }
-    map->max_row = row;
-    map->max_col = col;
+}
+
+char square_at(MAP *map, int row, int col) {
+    return map->squares[row * map->max_col + col];
 }
 
 int possible_steps(MAP *map, int row, int col, COORD steps[4]) {
     int step_count = 0;
-    char from = map->squares[row][col];
+    assert(row >=0 && row < map->max_row);
+    char from = square_at(map, row, col);
     for(int i = row-1; i<=row+1; i++) {
         for(int j = col-1; j<=col+1; j++) {
             if(i >= 0 && i < map->max_row && j >= 0 && j < map->max_col) {
                 int dist = (row-i)*(row-i) + (col-j)*(col-j);
                 if((i == row && j == col) || dist != 1)
                     continue;
-                char to = map->squares[i][j];
+                char to = square_at(map, row, col);
                 int diff = to-from;
                 if(diff <= 1) {
                     COORD coord;
@@ -184,15 +192,15 @@ int main(int argc, char *argv[]) {
     }
     puzzle_file = fopen(argv[1],"r");
     int max_row, max_col;
-    MAP map;
-    read_puzzle(puzzle_file, &map);
+    MAP *map =(MAP *)malloc(sizeof(MAP));
+    read_puzzle(puzzle_file, map);
     fclose(puzzle_file);
     COORD steps[4];
-    int max=possible_steps(&map, 2, 7, steps);
+    int max=possible_steps(map, 2, 7, steps);
     for(int s=0; s<max; s++) {
         int i = steps[s].row;
         int j = steps[s].col;
-        char c = map.squares[i][j];
+        char c = square_at(map, i, j);
         printf("%d %d (%c)\n", i, j, c);
     }
     HEAP *heap = new_min_heap(CAPACITY);
