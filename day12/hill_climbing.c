@@ -14,9 +14,6 @@ typedef struct {
     char *squares;
 } MAP;
 
-
-
-
 typedef struct {
     int row;
     int col;
@@ -35,17 +32,17 @@ COORD coord(int id) {
 typedef struct {
     int distance;
     COORD coord;
-} VALUE;
+} POINT;
 
-void print_value(VALUE value) {
+void print_value(POINT value) {
     printf("%d (%d,%d) ", value.distance, value.coord.row, value.coord.col);
 }
-int compare(VALUE a, VALUE b) {
+int compare(POINT a, POINT b) {
     return a.distance - b.distance;
 }
 
 typedef struct {
-    VALUE *values;
+    POINT *values;
     int count;
     int capacity;
 } HEAP;
@@ -55,7 +52,7 @@ HEAP *new_min_heap(int capacity) {
     HEAP *heap = (HEAP *)malloc(sizeof(HEAP));
     heap->capacity = capacity;
     heap->count = 0;
-    heap->values = (VALUE *)malloc((heap->capacity) * sizeof(VALUE));
+    heap->values = (POINT *)malloc((heap->capacity) * sizeof(POINT));
     return heap;
 }
 
@@ -79,12 +76,12 @@ int is_upper(HEAP *heap, int i, int j) {
 }
 
 void swap_values(HEAP *heap, int i, int j) {
-    VALUE temp = heap->values[i];
+    POINT temp = heap->values[i];
     heap->values[i] = heap->values[j];
     heap->values[j] = temp;
 }
 
-void insert(HEAP *heap, VALUE value) {
+void insert(HEAP *heap, POINT value) {
     assert(heap->count < heap->capacity);
     heap->values[heap->count] = value;
     heap->count++;
@@ -120,9 +117,9 @@ void build_min_heap(HEAP *heap) {
     }
 }
 
-VALUE extract_min(HEAP *heap) {
+POINT extract_min(HEAP *heap) {
     assert(heap->count > 0);
-    VALUE min_value = heap->values[0];
+    POINT min_value = heap->values[0];
     heap->values[0] = heap->values[heap->count-1];
     heap->count--;
     heapify(heap, 0);
@@ -141,20 +138,22 @@ void destroy_heap(HEAP *heap) {
 }
 
 void read_puzzle(FILE *puzzle_file, MAP *map) {
-    char line[MAX_ROW][MAX_COL];
+    static char line[MAX_ROW][MAX_COL];
     int row = 0;
+    map->max_col = 0;
     while(fgets(line[row], MAX_COL, puzzle_file)) {
-        line[row][strcspn(line[row], "\n")] = 0;
+        int l = strcspn(line[row], "\n");
+        line[row][l] = 0;
         row++;
-        map->max_col = strlen(line[row]);
+        if (map->max_col < l)
+            map->max_col = l;
     }
     map->max_row = row;
     map->squares = malloc(sizeof(char)*map->max_row*map->max_col);
     for(int row = 0; row < map->max_row; row++) {
         for(int col = 0; col < map->max_col; col++) {
-            map->squares[row*map->max_col] = line[row][col];
+            map->squares[row*map->max_col + col] = line[row][col];
         }
-        row++;
     }
 }
 
@@ -163,28 +162,26 @@ char square_at(MAP *map, int row, int col) {
 }
 
 int possible_steps(MAP *map, int row, int col, COORD steps[4]) {
-    int step_count = 0;
     assert(row >=0 && row < map->max_row);
+    int step_count = 0;
     char from = square_at(map, row, col);
-    for(int i = row-1; i<=row+1; i++) {
-        for(int j = col-1; j<=col+1; j++) {
-            if(i >= 0 && i < map->max_row && j >= 0 && j < map->max_col) {
-                int dist = (row-i)*(row-i) + (col-j)*(col-j);
-                if((i == row && j == col) || dist != 1)
-                    continue;
-                char to = square_at(map, row, col);
-                int diff = to-from;
-                if(diff <= 1) {
-                    COORD coord;
-                    coord.row = i;
-                    coord.col = j;
-                    steps[step_count++] = coord;
-                }
-            }
+    COORD adjacents[4] = 
+      { (COORD) { .row = row-1, .col = col },
+        (COORD) { .row = row+1, .col = col },
+        (COORD) { .row = row, .col = col-1 },
+        (COORD) { .row = row, .col = col+1 }};
+    for(int i=0; i<4; i++) {
+        COORD adj = adjacents[i];
+        if(adj.row < 0 || adj.row >= map->max_row || adj.col < 0 || adj.col >= map->max_col)
+            continue;
+        char to = square_at(map, adj.row, adj.col);
+        if(to - from <= 1) {
+            steps[step_count++] = adj;
         }
     }
     return step_count;
 }
+
 
 int main(int argc, char *argv[]) {
     FILE *puzzle_file;
@@ -197,30 +194,21 @@ int main(int argc, char *argv[]) {
     int max_row, max_col;
     MAP *map =(MAP *)malloc(sizeof(MAP));
     read_puzzle(puzzle_file, map);
+    for(int i = 0; i < map->max_row; i++) {
+        for(int j = 0; j < map->max_col; j++) {
+            char c = square_at(map, i, j);
+            printf("%c",(char)c);
+        }
+        printf("\n");
+    }
     fclose(puzzle_file);
     COORD steps[4];
-    int max=possible_steps(map, 2, 7, steps);
+    int max=possible_steps(map, 3, 7, steps);
     for(int s=0; s<max; s++) {
         int i = steps[s].row;
         int j = steps[s].col;
         char c = square_at(map, i, j);
-        printf("%d %d (%c)\n", i, j, c);
-    }
-    HEAP *heap = new_min_heap(CAPACITY);
-    VALUE vs[6] = { 
-    (VALUE){ .distance = 42, .coord = (COORD){ .row = 3, .col = 5 }},
-    (VALUE){ .distance = 17, .coord = (COORD){ .row = 3, .col = 5 }},
-    (VALUE){ .distance = 4807, .coord = (COORD){ .row = 3, .col = 5 }},
-    (VALUE){ .distance = 21, .coord = (COORD){ .row = 3, .col = 5 }},
-    (VALUE){ .distance = 22000, .coord = (COORD){ .row = 3, .col = 5 }},
-    (VALUE){ .distance = 1, .coord = (COORD){ .row = 3, .col = 5 }},
-    };
-    for(int i=0; i<6; i++) 
-        insert(heap, vs[i]);
-    print_heap(heap);
-    while(heap->count > 0) {
-        VALUE v = extract_min(heap);
-        printf("%d ", v.distance);
+        printf("%d %d (%c)\n", i, j, (char)c);
     }
     return 0;
 }
