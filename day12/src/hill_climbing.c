@@ -6,12 +6,15 @@
 #include <stdbool.h>
 #include "hill_climbing.h"
 
+const int DISTANCE_MAX = 100000;
 const int MAX_ROW = 50;
 const int MAX_COL =100;
 const int CAPACITY = MAX_ROW * MAX_COL;
 
-int compare(POINT a, POINT b) {
-    return a.distance - b.distance;
+int compare(void *vpa, void *vpb) {
+    SQUARE *a = (SQUARE *)vpa;
+    SQUARE *b = (SQUARE *)vpb;
+    return a->distance - b->distance;
 }
 
 MIN_HEAP *new_min_heap(int capacity, int (*compare)(void *, void *)) {
@@ -96,7 +99,7 @@ void *extract_min(MIN_HEAP *heap) {
 
 void print_heap(MIN_HEAP *heap) {
     for(int i=0; i<heap->count; i++) {
-        printf("%d ", ((POINT *)heap->values[i])->distance);
+        printf("%d ", ((SQUARE *)heap->values[i])->distance);
     }
     printf("\n");
 }
@@ -110,8 +113,8 @@ void destroy_min_heap(MIN_HEAP *heap, bool destroy_values) {
 }
 
 
-char square_at(HEIGHT_MAP *map, COORD coord) {
-    return map->squares[coord.row * map->max_col + coord.col];
+SQUARE *square_at(HEIGHT_MAP *map, COORD coord) {
+    return &map->squares[coord.row * map->max_col + coord.col];
 }
 
 
@@ -143,10 +146,14 @@ HEIGHT_MAP *read_puzzle(char *filename) {
    HEIGHT_MAP *map = (HEIGHT_MAP *)malloc(sizeof(HEIGHT_MAP));
    map->max_row = max_row;
    map->max_col = max_col;
-   map->squares = (char *)malloc(sizeof(char) * map->max_row * map->max_col);
+   map->squares = (SQUARE *)malloc(sizeof(SQUARE) * map->max_row * map->max_col);
     for(int row = 0; row < map->max_row; row++) {
         for(int col = 0; col < map->max_col; col++) {
-            map->squares[row*map->max_col + col] = lines[row][col];
+            SQUARE *square = &map->squares[row*map->max_col + col];
+            square->coord = (COORD) { .row = row, .col = col };
+            square->height = lines[row][col];
+            square->distance = DISTANCE_MAX;
+            square->predecessor = NULL;
         }
     }
     return map;
@@ -157,12 +164,12 @@ void destroy_height_map(HEIGHT_MAP *map) {
     free(map);
 }
 
-int adjacent_squares(HEIGHT_MAP *map, COORD coord, COORD *squares) {
+int adjacent_squares(HEIGHT_MAP *map, COORD coord, SQUARE **squares) {
     assert(coord.row >=0 && coord.row < map->max_row && coord.col >= 0 && coord.col < map->max_col);
     int count = 0;
-    char from = square_at(map, coord);
-    if(from == 'S')
-        from = 'a'-1;
+    SQUARE *from = square_at(map, coord);
+    if(from->height == 'S')
+        from->height = 'a'-1;
     COORD adjacents[4] = 
       { (COORD) { .row = coord.row-1, .col = coord.col },
         (COORD) { .row = coord.row+1, .col = coord.col },
@@ -172,9 +179,11 @@ int adjacent_squares(HEIGHT_MAP *map, COORD coord, COORD *squares) {
         COORD adj = adjacents[i];
         if(adj.row < 0 || adj.row >= map->max_row || adj.col < 0 || adj.col >= map->max_col)
             continue;
-        char to = square_at(map, adj);
-        if(to - from <= 1) {
-            squares[count++] = adj;
+        SQUARE *to = square_at(map, adj);
+        if(to->height == 'E')
+            to->height = 'z'+1;
+        if(to->height - from->height <= 1) {
+            squares[count++] = to;
         }
     }
     return count;
@@ -184,28 +193,48 @@ COORD find_char(HEIGHT_MAP *map, char c) {
     for(int row=0; row < map->max_row; row++) {
         for(int col=0; col < map->max_col; col++) {
             COORD coord = { .row = row, .col = col };
-            if(square_at(map,coord) == c)
+            if(square_at(map,coord)->height == c)
                 return coord;
         }
     }
     assert(false);
 }
 
-POINT *shortest_path(HEIGHT_MAP *map, COORD start, COORD end) {
-    POINT *path = (POINT *)malloc(sizeof(POINT));
-    path->coord = start;
-    path->distance = 0;
-    path->predecessor = NULL;
-    MIN_HEAP *heap = new_min_heap(map->max_row * map->max_col);
-
-
-    return path;
+void print_square(SQUARE *square) {
+    char preds[10];
+    if(square->predecessor != NULL) {
+        COORD coord = square->predecessor->coord;
+        sprintf(preds, "(%d,%d)", coord.row, coord.col);
+    }
+    else
+        strcpy(preds, "NULL");
+    printf("coords: (%d,%d) height: %c distance:%d predecessor: %s\n", 
+            square->coord.row,
+            square->coord.col,
+            square->height,
+            square->distance,
+            preds);
 }
-
-void destroy_path(POINT *path) {
-    if(path == NULL)
-        return;
-    POINT *predecessor = path->predecessor;
-    free(path);
-    destroy_path(predecessor);
+void set_paths(HEIGHT_MAP *map, COORD start_coord){
+    MIN_HEAP *heap = new_min_heap(map->max_row * map->max_col, compare);
+    SQUARE *start = square_at(map, start_coord); 
+    start->distance = 0;
+    add(heap, start);
+    while(heap->count) {
+        SQUARE *square = (SQUARE *)extract_min(heap);
+        printf("visiting");
+        print_square(square);
+        SQUARE *adj_squares[4];
+        int max_adj = adjacent_squares(map, square->coord, adj_squares);
+        for(int i=0; i<max_adj; i++) {
+            SQUARE *adj = adj_squares[i];
+            int alt = square->distance + 1;
+            if (alt < adj->distance) {
+                adj->distance = alt;
+                adj->predecessor = square;
+                add(heap, adj);
+            }
+        }
+    }
+    destroy_min_heap(heap, false);
 }

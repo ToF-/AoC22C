@@ -35,7 +35,7 @@ FAIL	unity/extras/fixture/src/unity_fixture.h	/^#define FAIL(/;"	d
 GroupFilter	unity/extras/fixture/src/unity_fixture_internals.h	/^    const char* GroupFilter;$/;"	m	struct:UNITY_FIXTURE_T
 Guard	unity/extras/memory/src/unity_memory.c	/^} Guard;$/;"	t	typeref:struct:GuardBytes	file:
 GuardBytes	unity/extras/memory/src/unity_memory.c	/^typedef struct GuardBytes$/;"	s	file:
-HEIGHT_MAP	src/hill_climbing.h	/^} HEIGHT_MAP;$/;"	t	typeref:struct:__anon4
+HEIGHT_MAP	src/hill_climbing.h	/^} HEIGHT_MAP;$/;"	t	typeref:struct:__anon3
 IGNORE_TEST	unity/extras/fixture/src/unity_fixture.h	/^#define IGNORE_TEST(/;"	d
 IGNORE_TEST	unity/extras/fixture/test/unity_fixture_Test.c	/^IGNORE_TEST(UnityCommandOptions, TestShouldBeIgnored)$/;"	f
 INC_DIR	unity/extras/fixture/test/Makefile	/^INC_DIR = -I..\/src -I..\/..\/..\/src\/$/;"	m
@@ -47,10 +47,9 @@ MAIN	makefile	/^MAIN=a.out$/;"	m
 MALLOC_DONT_FAIL	unity/extras/memory/src/unity_memory.c	/^#define MALLOC_DONT_FAIL /;"	d	file:
 MAX_COL	src/hill_climbing.c	/^const int MAX_COL =100;$/;"	v
 MAX_ROW	src/hill_climbing.c	/^const int MAX_ROW = 50;$/;"	v
-MIN_HEAP	src/hill_climbing.h	/^} MIN_HEAP;$/;"	t	typeref:struct:__anon3
+MIN_HEAP	src/hill_climbing.h	/^} MIN_HEAP;$/;"	t	typeref:struct:__anon2
 NameFilter	unity/extras/fixture/src/unity_fixture_internals.h	/^    const char* NameFilter;$/;"	m	struct:UNITY_FIXTURE_T
 NumberOfTests	unity/src/unity_internals.h	/^    UNITY_COUNTER_TYPE NumberOfTests;$/;"	m	struct:UNITY_STORAGE_T
-POINT	src/hill_climbing.h	/^} POINT;$/;"	t	typeref:struct:__anon2
 PROGMEM	unity/src/unity.c	/^#define PROGMEM$/;"	d	file:
 PointerPair	unity/extras/fixture/src/unity_fixture.c	/^struct PointerPair$/;"	s	file:
 RETURN_IF_FAIL_OR_IGNORE	unity/src/unity.c	/^#define RETURN_IF_FAIL_OR_IGNORE /;"	d	file:
@@ -61,6 +60,7 @@ RUN_TEST_GROUP	unity/extras/fixture/src/unity_fixture.h	/^#define RUN_TEST_GROUP
 RepeatCount	unity/extras/fixture/src/unity_fixture_internals.h	/^    unsigned int RepeatCount;$/;"	m	struct:UNITY_FIXTURE_T
 RunAllTests	test/all_tests.c	/^static void RunAllTests(void)$/;"	f	file:
 SECOND_PARAM	unity/extras/memory/test/unity_memory_Test.c	/^#define SECOND_PARAM(/;"	d	file:
+SQUARE	src/hill_climbing.h	/^} SQUARE;$/;"	t	typeref:struct:square
 SRC	unity/extras/fixture/test/Makefile	/^SRC = ..\/src\/unity_fixture.c \\$/;"	m
 SRC	unity/extras/memory/test/Makefile	/^SRC = ..\/src\/unity_memory.c \\$/;"	m
 SRC_FILES	makefile	/^SRC_FILES=$(UNITY_ROOT)\/src\/unity.c $(UNITY_ROOT)\/extras\/fixture\/src\/unity_fixture.c  $(UNITY_ROOT)\/extras\/memory\/src\/unity_memory.c test\/hill_climbing_test.c test\/test_runner.c test\/all_tests.c src\/hill_climbing.c$/;"	m
@@ -71,7 +71,9 @@ TARGET	unity/extras/memory/test/Makefile	/^TARGET = ..\/build\/memory_tests.exe$
 TEST	makefile	/^TEST=test.out$/;"	m
 TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, can_read_a_puzzle){$/;"	f
 TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, finding_adjacent_squares) {$/;"	f
+TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, finding_start_and_end_of_map) {$/;"	f
 TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, min_heap_adding_and_extracting) {$/;"	f
+TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, shortest_path) {$/;"	f
 TEST	unity/extras/fixture/src/unity_fixture.h	/^#define TEST(/;"	d
 TEST	unity/extras/fixture/test/template_fixture_tests.c	/^TEST(mygroup, test1)$/;"	f
 TEST	unity/extras/fixture/test/template_fixture_tests.c	/^TEST(mygroup, test2)$/;"	f
@@ -563,12 +565,12 @@ TestFailures	unity/src/unity_internals.h	/^    UNITY_COUNTER_TYPE TestFailures;$
 TestFile	unity/src/unity_internals.h	/^    const char* TestFile;$/;"	m	struct:UNITY_STORAGE_T
 TestIgnores	unity/src/unity_internals.h	/^    UNITY_COUNTER_TYPE TestIgnores;$/;"	m	struct:UNITY_STORAGE_T
 UNITY	unity/src/unity.h	/^#define UNITY$/;"	d
-UNITY_ARRAY_TO_ARRAY	unity/src/unity_internals.h	/^    UNITY_ARRAY_TO_ARRAY,$/;"	e	enum:__anon8
-UNITY_ARRAY_TO_VAL	unity/src/unity_internals.h	/^    UNITY_ARRAY_TO_VAL = 0,$/;"	e	enum:__anon8
-UNITY_ARRAY_UNKNOWN	unity/src/unity_internals.h	/^    UNITY_ARRAY_UNKNOWN$/;"	e	enum:__anon8
+UNITY_ARRAY_TO_ARRAY	unity/src/unity_internals.h	/^    UNITY_ARRAY_TO_ARRAY,$/;"	e	enum:__anon7
+UNITY_ARRAY_TO_VAL	unity/src/unity_internals.h	/^    UNITY_ARRAY_TO_VAL = 0,$/;"	e	enum:__anon7
+UNITY_ARRAY_UNKNOWN	unity/src/unity_internals.h	/^    UNITY_ARRAY_UNKNOWN$/;"	e	enum:__anon7
 UNITY_BEGIN	unity/src/unity_internals.h	/^#define UNITY_BEGIN(/;"	d
 UNITY_CLR_DETAILS	unity/src/unity_internals.h	/^#define UNITY_CLR_DETAILS(/;"	d
-UNITY_COMPARISON_T	unity/src/unity_internals.h	/^} UNITY_COMPARISON_T;$/;"	t	typeref:enum:__anon7
+UNITY_COMPARISON_T	unity/src/unity_internals.h	/^} UNITY_COMPARISON_T;$/;"	t	typeref:enum:__anon6
 UNITY_COUNTER_TYPE	unity/src/unity_internals.h	/^#define UNITY_COUNTER_TYPE /;"	d
 UNITY_DETAIL1_NAME	unity/src/unity_internals.h	/^#define UNITY_DETAIL1_NAME /;"	d
 UNITY_DETAIL2_NAME	unity/src/unity_internals.h	/^#define UNITY_DETAIL2_NAME /;"	d
@@ -576,31 +578,31 @@ UNITY_DISPLAY_RANGE_CHAR	unity/src/unity_internals.h	/^#define UNITY_DISPLAY_RAN
 UNITY_DISPLAY_RANGE_HEX	unity/src/unity_internals.h	/^#define UNITY_DISPLAY_RANGE_HEX /;"	d
 UNITY_DISPLAY_RANGE_INT	unity/src/unity_internals.h	/^#define UNITY_DISPLAY_RANGE_INT /;"	d
 UNITY_DISPLAY_RANGE_UINT	unity/src/unity_internals.h	/^#define UNITY_DISPLAY_RANGE_UINT /;"	d
-UNITY_DISPLAY_STYLE_CHAR	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_CHAR     = 1 + UNITY_DISPLAY_RANGE_CHAR + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_HEX16	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_HEX16    = 2 + UNITY_DISPLAY_RANGE_HEX,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_HEX32	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_HEX32    = 4 + UNITY_DISPLAY_RANGE_HEX,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_HEX64	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_HEX64    = 8 + UNITY_DISPLAY_RANGE_HEX,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_HEX8	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_HEX8     = 1 + UNITY_DISPLAY_RANGE_HEX,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_INT	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_INT      = (UNITY_INT_WIDTH \/ 8) + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_INT16	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_INT16    = 2 + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_INT32	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_INT32    = 4 + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_INT64	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_INT64    = 8 + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_INT8	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_INT8     = 1 + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon6
+UNITY_DISPLAY_STYLE_CHAR	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_CHAR     = 1 + UNITY_DISPLAY_RANGE_CHAR + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_HEX16	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_HEX16    = 2 + UNITY_DISPLAY_RANGE_HEX,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_HEX32	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_HEX32    = 4 + UNITY_DISPLAY_RANGE_HEX,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_HEX64	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_HEX64    = 8 + UNITY_DISPLAY_RANGE_HEX,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_HEX8	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_HEX8     = 1 + UNITY_DISPLAY_RANGE_HEX,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_INT	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_INT      = (UNITY_INT_WIDTH \/ 8) + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_INT16	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_INT16    = 2 + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_INT32	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_INT32    = 4 + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_INT64	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_INT64    = 8 + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_INT8	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_INT8     = 1 + UNITY_DISPLAY_RANGE_INT,$/;"	e	enum:__anon5
 UNITY_DISPLAY_STYLE_POINTER	unity/src/unity_internals.h	/^  #define UNITY_DISPLAY_STYLE_POINTER /;"	d
-UNITY_DISPLAY_STYLE_T	unity/src/unity_internals.h	/^} UNITY_DISPLAY_STYLE_T;$/;"	t	typeref:enum:__anon6
-UNITY_DISPLAY_STYLE_UINT	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UINT     = (UNITY_INT_WIDTH \/ 8) + UNITY_DISPLAY_RANGE_UINT,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_UINT16	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UINT16   = 2 + UNITY_DISPLAY_RANGE_UINT,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_UINT32	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UINT32   = 4 + UNITY_DISPLAY_RANGE_UINT,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_UINT64	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UINT64   = 8 + UNITY_DISPLAY_RANGE_UINT,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_UINT8	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UINT8    = 1 + UNITY_DISPLAY_RANGE_UINT,$/;"	e	enum:__anon6
-UNITY_DISPLAY_STYLE_UNKNOWN	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UNKNOWN$/;"	e	enum:__anon6
+UNITY_DISPLAY_STYLE_T	unity/src/unity_internals.h	/^} UNITY_DISPLAY_STYLE_T;$/;"	t	typeref:enum:__anon5
+UNITY_DISPLAY_STYLE_UINT	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UINT     = (UNITY_INT_WIDTH \/ 8) + UNITY_DISPLAY_RANGE_UINT,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_UINT16	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UINT16   = 2 + UNITY_DISPLAY_RANGE_UINT,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_UINT32	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UINT32   = 4 + UNITY_DISPLAY_RANGE_UINT,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_UINT64	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UINT64   = 8 + UNITY_DISPLAY_RANGE_UINT,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_UINT8	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UINT8    = 1 + UNITY_DISPLAY_RANGE_UINT,$/;"	e	enum:__anon5
+UNITY_DISPLAY_STYLE_UNKNOWN	unity/src/unity_internals.h	/^    UNITY_DISPLAY_STYLE_UNKNOWN$/;"	e	enum:__anon5
 UNITY_DOUBLE	unity/src/unity_internals.h	/^  typedef UNITY_DOUBLE_TYPE UNITY_DOUBLE;$/;"	t
 UNITY_DOUBLE	unity/src/unity_internals.h	/^  typedef UNITY_FLOAT UNITY_DOUBLE;$/;"	t
 UNITY_DOUBLE_PRECISION	unity/src/unity_internals.h	/^  #define UNITY_DOUBLE_PRECISION /;"	d
 UNITY_DOUBLE_TYPE	unity/src/unity_internals.h	/^    #define UNITY_DOUBLE_TYPE /;"	d
 UNITY_DOUBLE_TYPE	unity/src/unity_internals.h	/^  #define UNITY_DOUBLE_TYPE /;"	d
 UNITY_END	unity/src/unity_internals.h	/^#define UNITY_END(/;"	d
-UNITY_EQUAL_TO	unity/src/unity_internals.h	/^    UNITY_EQUAL_TO         = 0x1,$/;"	e	enum:__anon7
+UNITY_EQUAL_TO	unity/src/unity_internals.h	/^    UNITY_EQUAL_TO         = 0x1,$/;"	e	enum:__anon6
 UNITY_EXCLUDE_DOUBLE	unity/src/unity_internals.h	/^  #define UNITY_EXCLUDE_DOUBLE$/;"	d
 UNITY_EXCLUDE_DOUBLE	unity/src/unity_internals.h	/^#define UNITY_EXCLUDE_DOUBLE /;"	d
 UNITY_EXCLUDE_FLOAT_PRINT	unity/src/unity_internals.h	/^#define UNITY_EXCLUDE_FLOAT_PRINT$/;"	d
@@ -612,7 +614,7 @@ UNITY_FAIL_AND_BAIL	unity/src/unity.c	/^#define UNITY_FAIL_AND_BAIL /;"	d	file:
 UNITY_FIXTURE_H_	unity/extras/fixture/src/unity_fixture.h	/^#define UNITY_FIXTURE_H_$/;"	d
 UNITY_FIXTURE_INTERNALS_H_	unity/extras/fixture/src/unity_fixture_internals.h	/^#define UNITY_FIXTURE_INTERNALS_H_$/;"	d
 UNITY_FIXTURE_T	unity/extras/fixture/src/unity_fixture_internals.h	/^struct UNITY_FIXTURE_T$/;"	s
-UNITY_FLAGS_T	unity/src/unity_internals.h	/^} UNITY_FLAGS_T;$/;"	t	typeref:enum:__anon8
+UNITY_FLAGS_T	unity/src/unity_internals.h	/^} UNITY_FLAGS_T;$/;"	t	typeref:enum:__anon7
 UNITY_FLOAT	unity/src/unity_internals.h	/^typedef UNITY_FLOAT_TYPE UNITY_FLOAT;$/;"	t
 UNITY_FLOAT_INVALID_TRAIT	unity/src/unity_internals.h	/^    UNITY_FLOAT_INVALID_TRAIT$/;"	e	enum:UNITY_FLOAT_TRAIT
 UNITY_FLOAT_IS_DET	unity/src/unity_internals.h	/^    UNITY_FLOAT_IS_DET,$/;"	e	enum:UNITY_FLOAT_TRAIT
@@ -633,8 +635,8 @@ UNITY_FRAMEWORK_H	unity/src/unity.h	/^#define UNITY_FRAMEWORK_H$/;"	d
 UNITY_FREE	unity/extras/memory/src/unity_memory.h	/^    #define UNITY_FREE(/;"	d
 UNITY_FUNCTION_ATTR	unity/src/unity_internals.h	/^#    define UNITY_FUNCTION_ATTR(/;"	d
 UNITY_GET_TIME	unity/src/unity_internals.h	/^      #define UNITY_GET_TIME(/;"	d
-UNITY_GREATER_OR_EQUAL	unity/src/unity_internals.h	/^    UNITY_GREATER_OR_EQUAL = 0x2 + UNITY_EQUAL_TO,$/;"	e	enum:__anon7
-UNITY_GREATER_THAN	unity/src/unity_internals.h	/^    UNITY_GREATER_THAN     = 0x2,$/;"	e	enum:__anon7
+UNITY_GREATER_OR_EQUAL	unity/src/unity_internals.h	/^    UNITY_GREATER_OR_EQUAL = 0x2 + UNITY_EQUAL_TO,$/;"	e	enum:__anon6
+UNITY_GREATER_THAN	unity/src/unity_internals.h	/^    UNITY_GREATER_THAN     = 0x2,$/;"	e	enum:__anon6
 UNITY_IGNORE_AND_BAIL	unity/src/unity.c	/^#define UNITY_IGNORE_AND_BAIL /;"	d	file:
 UNITY_INCLUDE_DOUBLE	unity/src/unity_internals.h	/^    #undef UNITY_INCLUDE_DOUBLE$/;"	d
 UNITY_INT	unity/src/unity_internals.h	/^    typedef UNITY_INT32  UNITY_INT;$/;"	t
@@ -661,7 +663,7 @@ UNITY_MAX_POINTERS	unity/extras/fixture/src/unity_fixture_internals.h	/^#define 
 UNITY_MEMORY_OVERRIDES_H_	unity/extras/memory/src/unity_memory.h	/^#define UNITY_MEMORY_OVERRIDES_H_$/;"	d
 UNITY_NAN_CHECK	unity/src/unity.c	/^  #define UNITY_NAN_CHECK /;"	d	file:
 UNITY_NEW_TEST	unity/src/unity_internals.h	/^#define UNITY_NEW_TEST(/;"	d
-UNITY_NOT_EQUAL	unity/src/unity_internals.h	/^    UNITY_NOT_EQUAL        = 0x0,$/;"	e	enum:__anon7
+UNITY_NOT_EQUAL	unity/src/unity_internals.h	/^    UNITY_NOT_EQUAL        = 0x0,$/;"	e	enum:__anon6
 UNITY_OUTPUT_CHAR	unity/src/unity_internals.h	/^  #define UNITY_OUTPUT_CHAR(/;"	d
 UNITY_OUTPUT_COMPLETE	unity/src/unity_internals.h	/^#define UNITY_OUTPUT_COMPLETE(/;"	d
 UNITY_OUTPUT_FLUSH	unity/src/unity_internals.h	/^    #define UNITY_OUTPUT_FLUSH(/;"	d
@@ -680,8 +682,8 @@ UNITY_SET_DETAIL	unity/src/unity_internals.h	/^#define UNITY_SET_DETAIL(/;"	d
 UNITY_SET_DETAILS	unity/src/unity_internals.h	/^#define UNITY_SET_DETAILS(/;"	d
 UNITY_SHORTHAND_AS_OLD	unity/src/unity_internals.h	/^#define UNITY_SHORTHAND_AS_OLD$/;"	d
 UNITY_SKIP_DEFAULT_RUNNER	unity/src/unity_internals.h	/^#define UNITY_SKIP_DEFAULT_RUNNER$/;"	d
-UNITY_SMALLER_OR_EQUAL	unity/src/unity_internals.h	/^    UNITY_SMALLER_OR_EQUAL = 0x4 + UNITY_EQUAL_TO,$/;"	e	enum:__anon7
-UNITY_SMALLER_THAN	unity/src/unity_internals.h	/^    UNITY_SMALLER_THAN     = 0x4,$/;"	e	enum:__anon7
+UNITY_SMALLER_OR_EQUAL	unity/src/unity_internals.h	/^    UNITY_SMALLER_OR_EQUAL = 0x4 + UNITY_EQUAL_TO,$/;"	e	enum:__anon6
+UNITY_SMALLER_THAN	unity/src/unity_internals.h	/^    UNITY_SMALLER_THAN     = 0x4,$/;"	e	enum:__anon6
 UNITY_STORAGE_T	unity/src/unity_internals.h	/^struct UNITY_STORAGE_T$/;"	s
 UNITY_SUPPORT_64	unity/src/unity_internals.h	/^    #define UNITY_SUPPORT_64$/;"	d
 UNITY_SUPPORT_VARIADIC_MACROS	unity/src/unity_internals.h	/^#define UNITY_SUPPORT_VARIADIC_MACROS$/;"	d
@@ -888,12 +890,12 @@ UNITY_UINT32	unity/src/unity_internals.h	/^    typedef unsigned long   UNITY_UIN
 UNITY_UINT64	unity/src/unity_internals.h	/^    typedef unsigned long      UNITY_UINT64;$/;"	t
 UNITY_UINT64	unity/src/unity_internals.h	/^    typedef unsigned long long UNITY_UINT64;$/;"	t
 UNITY_UINT8	unity/src/unity_internals.h	/^    typedef unsigned char   UNITY_UINT8;$/;"	t
-UNITY_UNKNOWN	unity/src/unity_internals.h	/^    UNITY_UNKNOWN$/;"	e	enum:__anon7
+UNITY_UNKNOWN	unity/src/unity_internals.h	/^    UNITY_UNKNOWN$/;"	e	enum:__anon6
 UNITY_VERSION	unity/src/unity.h	/^#define UNITY_VERSION /;"	d
 UNITY_VERSION_BUILD	unity/src/unity.h	/^#define UNITY_VERSION_BUILD /;"	d
 UNITY_VERSION_MAJOR	unity/src/unity.h	/^#define UNITY_VERSION_MAJOR /;"	d
 UNITY_VERSION_MINOR	unity/src/unity.h	/^#define UNITY_VERSION_MINOR /;"	d
-UNITY_WITHIN	unity/src/unity_internals.h	/^    UNITY_WITHIN           = 0x0,$/;"	e	enum:__anon7
+UNITY_WITHIN	unity/src/unity_internals.h	/^    UNITY_WITHIN           = 0x0,$/;"	e	enum:__anon6
 USING_OUTPUT_SPY	unity/extras/memory/test/unity_memory_Test.c	/^  #define USING_OUTPUT_SPY /;"	d	file:
 USING_OUTPUT_SPY	unity/extras/memory/test/unity_memory_Test.c	/^  #define USING_OUTPUT_SPY$/;"	d	file:
 USING_SPY_AS	unity/extras/memory/test/unity_memory_Test.c	/^#define USING_SPY_AS(/;"	d	file:
@@ -967,7 +969,7 @@ UnityPrintNumberByStyle	unity/src/unity.c	/^void UnityPrintNumberByStyle(const U
 UnityPrintNumberHex	unity/src/unity.c	/^void UnityPrintNumberHex(const UNITY_UINT number, const char nibbles_to_print)$/;"	f
 UnityPrintNumberUnsigned	unity/src/unity.c	/^void UnityPrintNumberUnsigned(const UNITY_UINT number)$/;"	f
 UnityPrintPointlessAndBail	unity/src/unity.c	/^#define UnityPrintPointlessAndBail(/;"	d	file:
-UnityQuickCompare	unity/src/unity.c	/^} UnityQuickCompare;$/;"	v	typeref:union:__anon5	file:
+UnityQuickCompare	unity/src/unity.c	/^} UnityQuickCompare;$/;"	v	typeref:union:__anon4	file:
 UnitySetTestFile	unity/src/unity.c	/^void UnitySetTestFile(const char* filename)$/;"	f
 UnityStrBreaker	unity/src/unity.c	/^static const char PROGMEM UnityStrBreaker[]                = "-----------------------";$/;"	v	file:
 UnityStrByte	unity/src/unity.c	/^static const char PROGMEM UnityStrByte[]                   = " Byte ";$/;"	v	file:
@@ -1024,23 +1026,25 @@ buffer	unity/extras/memory/test/unity_output_Spy.c	/^static char* buffer;$/;"	v	
 build_min_heap	src/hill_climbing.c	/^void build_min_heap(MIN_HEAP *heap) {$/;"	f
 calloc	unity/extras/memory/src/unity_memory.c	/^#undef calloc$/;"	d	file:
 calloc	unity/extras/memory/src/unity_memory.h	/^#define calloc /;"	d
-capacity	src/hill_climbing.h	/^    int capacity;$/;"	m	struct:__anon3
+capacity	src/hill_climbing.h	/^    int capacity;$/;"	m	struct:__anon2
 col	src/hill_climbing.h	/^    int col;$/;"	m	struct:__anon1
-compare	src/hill_climbing.c	/^int compare(POINT a, POINT b) {$/;"	f
-compare	src/hill_climbing.h	/^    int (* compare)(void *, void *);$/;"	m	struct:__anon3
+compare	src/hill_climbing.c	/^int compare(SQUARE a, SQUARE b) {$/;"	f
+compare	src/hill_climbing.h	/^    int (* compare)(void *, void *);$/;"	m	struct:__anon2
 compare_ints	test/hill_climbing_test.c	/^int compare_ints(void *vpa, void *vpb) {$/;"	f
-coord	src/hill_climbing.h	/^    COORD coord;$/;"	m	struct:__anon2
-count	src/hill_climbing.h	/^    int count;$/;"	m	struct:__anon3
+coord	src/hill_climbing.h	/^    COORD coord;$/;"	m	struct:square
+count	src/hill_climbing.h	/^    int count;$/;"	m	struct:__anon2
 count	unity/extras/memory/test/unity_output_Spy.c	/^static int count;$/;"	v	file:
-d	unity/src/unity.c	/^    double d;$/;"	m	union:__anon5	file:
+d	unity/src/unity.c	/^    double d;$/;"	m	union:__anon4	file:
 dashRNotLast	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* dashRNotLast[] = {$/;"	v	file:
 data	unity/extras/fixture/test/template_fixture_tests.c	/^static int data = -1;$/;"	v	file:
 destroy_height_map	src/hill_climbing.c	/^void destroy_height_map(HEIGHT_MAP *map) {$/;"	f
 destroy_min_heap	src/hill_climbing.c	/^void destroy_min_heap(MIN_HEAP *heap, bool destroy_values) {$/;"	f
-distance	src/hill_climbing.h	/^    int distance;$/;"	m	struct:__anon2
+destroy_path	src/hill_climbing.c	/^void destroy_path(SQUARE *path) {$/;"	f
+distance	src/hill_climbing.h	/^    int distance;$/;"	m	struct:square
 end	unity/extras/memory/src/unity_memory.c	/^static const char end[] = "END";$/;"	v	file:
 extract_min	src/hill_climbing.c	/^void *extract_min(MIN_HEAP *heap) {$/;"	f
-f	unity/src/unity.c	/^    float f;$/;"	m	union:__anon5	file:
+f	unity/src/unity.c	/^    float f;$/;"	m	union:__anon4	file:
+find_char	src/hill_climbing.c	/^COORD find_char(HEIGHT_MAP *map, char c) {$/;"	f
 free	unity/extras/memory/src/unity_memory.c	/^#undef free$/;"	d	file:
 free	unity/extras/memory/src/unity_memory.h	/^#define free /;"	d
 group	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* group[] = {$/;"	v	file:
@@ -1048,11 +1052,12 @@ groupSelected	unity/extras/fixture/src/unity_fixture.c	/^static int groupSelecte
 guard_space	unity/extras/memory/src/unity_memory.c	/^    size_t guard_space;$/;"	m	struct:GuardBytes	file:
 heap_index	unity/extras/memory/src/unity_memory.c	/^static size_t heap_index;$/;"	v	file:
 heapify	src/hill_climbing.c	/^void heapify(MIN_HEAP *heap, int i) {$/;"	f
+height	src/hill_climbing.h	/^    char height;$/;"	m	struct:square
 hill_climbing	test/hill_climbing_test.c	/^TEST_GROUP(hill_climbing);$/;"	v
-i16	unity/src/unity.c	/^    UNITY_INT16 i16;$/;"	m	union:__anon5	file:
-i32	unity/src/unity.c	/^    UNITY_INT32 i32;$/;"	m	union:__anon5	file:
-i64	unity/src/unity.c	/^    UNITY_INT64 i64;$/;"	m	union:__anon5	file:
-i8	unity/src/unity.c	/^    UNITY_INT8 i8;$/;"	m	union:__anon5	file:
+i16	unity/src/unity.c	/^    UNITY_INT16 i16;$/;"	m	union:__anon4	file:
+i32	unity/src/unity.c	/^    UNITY_INT32 i32;$/;"	m	union:__anon4	file:
+i64	unity/src/unity.c	/^    UNITY_INT64 i64;$/;"	m	union:__anon4	file:
+i8	unity/src/unity.c	/^    UNITY_INT8 i8;$/;"	m	union:__anon4	file:
 int1	unity/extras/fixture/test/unity_fixture_Test.c	/^static int int1;$/;"	v	file:
 int2	unity/extras/fixture/test/unity_fixture_Test.c	/^static int int2;$/;"	v	file:
 int3	unity/extras/fixture/test/unity_fixture_Test.c	/^static int int3;$/;"	v	file:
@@ -1072,8 +1077,8 @@ malloc	unity/extras/memory/src/unity_memory.h	/^#define malloc /;"	d
 malloc_count	unity/extras/memory/src/unity_memory.c	/^static int malloc_count;$/;"	v	file:
 malloc_fail_countdown	unity/extras/memory/src/unity_memory.c	/^static int malloc_fail_countdown = MALLOC_DONT_FAIL;$/;"	v	file:
 map	test/hill_climbing_test.c	/^HEIGHT_MAP *map;$/;"	v
-max_col	src/hill_climbing.h	/^    int max_col;$/;"	m	struct:__anon4
-max_row	src/hill_climbing.h	/^    int max_row;$/;"	m	struct:__anon4
+max_col	src/hill_climbing.h	/^    int max_col;$/;"	m	struct:__anon3
+max_row	src/hill_climbing.h	/^    int max_row;$/;"	m	struct:__anon3
 multiple	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* multiple[] = {$/;"	v	file:
 mygroup	unity/extras/fixture/test/template_fixture_tests.c	/^TEST_GROUP(mygroup);$/;"	v
 name	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* name[] = {$/;"	v	file:
@@ -1091,6 +1096,7 @@ pointer2	unity/extras/fixture/test/unity_fixture_Test.c	/^static int* pointer2 =
 pointer3	unity/extras/fixture/test/unity_fixture_Test.c	/^static int* pointer3 = (int*)3;$/;"	v	file:
 pointer_index	unity/extras/fixture/src/unity_fixture.c	/^static int pointer_index = 0;$/;"	v	file:
 pointer_store	unity/extras/fixture/src/unity_fixture.c	/^static struct PointerPair pointer_store[UNITY_MAX_POINTERS];$/;"	v	typeref:struct:PointerPair	file:
+predecessor	src/hill_climbing.h	/^    struct point *predecessor;$/;"	m	struct:square	typeref:struct:square::point
 print_heap	src/hill_climbing.c	/^void print_heap(MIN_HEAP *heap) {$/;"	f
 print_heap_as_ints	test/hill_climbing_test.c	/^void print_heap_as_ints(MIN_HEAP *heap) {$/;"	f
 process	src/hill_climbing.c	/^int process(int argc, char *argv[]) {$/;"	f
@@ -1110,11 +1116,13 @@ savedVerbose	unity/extras/fixture/test/unity_fixture_Test.c	/^static int savedVe
 selected	unity/extras/fixture/src/unity_fixture.c	/^static int selected(const char* filter, const char* name)$/;"	f	file:
 setUp	unity/extras/fixture/src/unity_fixture.c	/^void setUp(void)    { \/*does nothing*\/ }$/;"	f
 setUp	unity/extras/memory/test/unity_memory_Test.c	/^void setUp(void) $/;"	f
+shortest_path	src/hill_climbing.c	/^SQUARE *shortest_path(HEIGHT_MAP *map, COORD start, COORD end) {$/;"	f
 size	unity/extras/memory/src/unity_memory.c	/^    size_t size;$/;"	m	struct:GuardBytes	file:
 size	unity/extras/memory/test/unity_output_Spy.c	/^static int size;$/;"	v	file:
 spy_enable	unity/extras/memory/test/unity_output_Spy.c	/^static int spy_enable;$/;"	v	file:
-square_at	src/hill_climbing.c	/^char square_at(HEIGHT_MAP *map, COORD coord) {$/;"	f
-squares	src/hill_climbing.h	/^    char *squares;$/;"	m	struct:__anon4
+square	src/hill_climbing.h	/^typedef struct square {$/;"	s
+square_at	src/hill_climbing.c	/^SQUARE *square_at(HEIGHT_MAP *map, COORD coord) {$/;"	f
+squares	src/hill_climbing.h	/^    SQUARE *squares;$/;"	m	struct:__anon3
 swap	src/hill_climbing.c	/^void swap(MIN_HEAP *heap, int i, int j) {$/;"	f
 tearDown	unity/extras/fixture/src/unity_fixture.c	/^void tearDown(void) { \/*does nothing*\/ }$/;"	f
 tearDown	unity/extras/memory/test/unity_memory_Test.c	/^void tearDown(void) $/;"	f
@@ -1144,5 +1152,5 @@ unity_realloc	unity/extras/memory/src/unity_memory.c	/^void* unity_realloc(void*
 unity_size_round_up	unity/extras/memory/src/unity_memory.c	/^static size_t unity_size_round_up(size_t size)$/;"	f	file:
 unityfunction	unity/extras/fixture/src/unity_fixture_internals.h	/^typedef void unityfunction(void);$/;"	t
 unknownCommand	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* unknownCommand[] = {$/;"	v	file:
-values	src/hill_climbing.h	/^    void **values;$/;"	m	struct:__anon3
+values	src/hill_climbing.h	/^    void **values;$/;"	m	struct:__anon2
 verbose	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* verbose[] = {$/;"	v	file:

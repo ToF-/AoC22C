@@ -2,6 +2,7 @@
 #include "unity.h"
 #include "unity_memory.h"
 #include "hill_climbing.h"
+#include "limits.h"
 
 TEST_GROUP(hill_climbing);
 
@@ -26,19 +27,19 @@ TEST_TEAR_DOWN(hill_climbing) {
 TEST(hill_climbing, can_read_a_puzzle){
     TEST_ASSERT_EQUAL_INT(5, map->max_row);
     TEST_ASSERT_EQUAL_INT(8, map->max_col);
-    TEST_ASSERT_EQUAL_CHAR('S', square_at(map, (COORD) { .row = 0, .col = 0}));
-    TEST_ASSERT_EQUAL_CHAR('m', square_at(map, (COORD) { .row = 0, .col = 7}));
-    TEST_ASSERT_EQUAL_CHAR('i', square_at(map, (COORD) { .row = 4, .col = 7}));
-    TEST_ASSERT_EQUAL_CHAR('a', square_at(map, (COORD) { .row = 4, .col = 0}));
+    TEST_ASSERT_EQUAL_CHAR('S', square_at(map, (COORD) { .row = 0, .col = 0})->height);
+    TEST_ASSERT_EQUAL_CHAR('m', square_at(map, (COORD) { .row = 0, .col = 7})->height);
+    TEST_ASSERT_EQUAL_CHAR('i', square_at(map, (COORD) { .row = 4, .col = 7})->height);
+    TEST_ASSERT_EQUAL_CHAR('a', square_at(map, (COORD) { .row = 4, .col = 0})->height);
 }
 TEST(hill_climbing, finding_adjacent_squares) {
-    static COORD squares[4];
+    static SQUARE *squares[4];
     int adj_max = adjacent_squares(map, (COORD) { .row = 0, .col = 0}, squares);
     TEST_ASSERT_EQUAL_INT(2, adj_max);
-    TEST_ASSERT_EQUAL(1, squares[0].row);
-    TEST_ASSERT_EQUAL(0, squares[0].col);
-    TEST_ASSERT_EQUAL(0, squares[1].row);
-    TEST_ASSERT_EQUAL(1, squares[1].col);
+    TEST_ASSERT_EQUAL(1, squares[0]->coord.row);
+    TEST_ASSERT_EQUAL(0, squares[0]->coord.col);
+    TEST_ASSERT_EQUAL(0, squares[1]->coord.row);
+    TEST_ASSERT_EQUAL(1, squares[1]->coord.col);
 
     adj_max = adjacent_squares(map, (COORD) { .row = 1, .col = 4}, squares);
     TEST_ASSERT_EQUAL_INT(4, adj_max);
@@ -89,13 +90,17 @@ TEST(hill_climbing, finding_start_and_end_of_map) {
     TEST_ASSERT_EQUAL_INT(2, end.row);
     TEST_ASSERT_EQUAL_INT(5, end.col);
 }
-TEST(hill_climbing, shortest_path) {
-    COORD start = { .row = 0, .col = 0 };
-    COORD end = { .row = 0, .col = 1 };
-    POINT *path = shortest_path(map, start, end);
-    TEST_ASSERT(path != NULL);
-    TEST_ASSERT_EQUAL_INT(1, path->distance);
-    TEST_ASSERT_EQUAL_INT(0, path->coord.row);
-    TEST_ASSERT_EQUAL_INT(1, path->coord.col);
-    destroy_path(path);
+TEST(hill_climbing, set_paths) {
+    COORD start = find_char(map, 'S');
+    COORD end = find_char(map, 'E');
+    set_paths(map, start);
+    TEST_ASSERT_EQUAL_INT(31, square_at(map, end)->distance);
+}
+TEST(hill_climbing, puzzle_part_1) {
+    HEIGHT_MAP *puzzle_map = read_puzzle("puzzle.txt");
+    COORD start = find_char(puzzle_map, 'S');
+    COORD end = find_char(puzzle_map, 'E');
+    set_paths(puzzle_map, start);
+    TEST_ASSERT_EQUAL_INT(31, square_at(puzzle_map, end)->distance);
+    destroy_height_map(puzzle_map);
 }
