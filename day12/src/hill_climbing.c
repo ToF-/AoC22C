@@ -3,6 +3,7 @@
 #include <string.h>
 #include <limits.h>
 #include <assert.h>
+#include "hill_climbing.h"
 
 const int MAX_ROW = 50;
 const int MAX_COL =100;
@@ -14,11 +15,6 @@ typedef struct {
     char *squares;
 } MAP;
 
-typedef struct {
-    int row;
-    int col;
-} COORD;
-
 int node_id(COORD coord) {
     assert(coord.row >= 0 && coord.row < MAX_ROW && coord.col >= 0 && coord.col < MAX_COL);
     return coord.row * MAX_COL + coord.col;
@@ -29,23 +25,12 @@ COORD coord(int id) {
     return (COORD) { .row = id / MAX_COL, .col = id % MAX_COL };
 }
 
-typedef struct {
-    int distance;
-    COORD coord;
-} POINT;
-
 void print_value(POINT value) {
     printf("%d (%d,%d) ", value.distance, value.coord.row, value.coord.col);
 }
 int compare(POINT a, POINT b) {
     return a.distance - b.distance;
 }
-
-typedef struct {
-    POINT *values;
-    int count;
-    int capacity;
-} HEAP;
 
 void print_heap(HEAP *);
 HEAP *new_min_heap(int capacity) {
@@ -137,79 +122,74 @@ void destroy_heap(HEAP *heap) {
     free(heap);
 }
 
-void read_puzzle(FILE *puzzle_file, MAP *map) {
-    static char line[MAX_ROW][MAX_COL];
-    int row = 0;
-    map->max_col = 0;
-    while(fgets(line[row], MAX_COL, puzzle_file)) {
-        int l = strcspn(line[row], "\n");
-        line[row][l] = 0;
-        row++;
-        if (map->max_col < l)
-            map->max_col = l;
-    }
-    map->max_row = row;
-    map->squares = malloc(sizeof(char)*map->max_row*map->max_col);
-    for(int row = 0; row < map->max_row; row++) {
-        for(int col = 0; col < map->max_col; col++) {
-            map->squares[row*map->max_col + col] = line[row][col];
-        }
-    }
-}
 
-char square_at(MAP *map, int row, int col) {
-    return map->squares[row * map->max_col + col];
-}
-
-int possible_steps(MAP *map, int row, int col, COORD steps[4]) {
-    assert(row >=0 && row < map->max_row);
-    int step_count = 0;
-    char from = square_at(map, row, col);
-    COORD adjacents[4] = 
-      { (COORD) { .row = row-1, .col = col },
-        (COORD) { .row = row+1, .col = col },
-        (COORD) { .row = row, .col = col-1 },
-        (COORD) { .row = row, .col = col+1 }};
-    for(int i=0; i<4; i++) {
-        COORD adj = adjacents[i];
-        if(adj.row < 0 || adj.row >= map->max_row || adj.col < 0 || adj.col >= map->max_col)
-            continue;
-        char to = square_at(map, adj.row, adj.col);
-        if(to - from <= 1) {
-            steps[step_count++] = adj;
-        }
-    }
-    return step_count;
+char square_at(HEIGHT_MAP *map, COORD coord) {
+    return map->squares[coord.row * map->max_col + coord.col];
 }
 
 
-int main(int argc, char *argv[]) {
-    FILE *puzzle_file;
-
+int process(int argc, char *argv[]) {
     if(argc==1) {
         fprintf(stderr,"missing argument: <puzzle.txt>\n");
         return 1;
     }
-    puzzle_file = fopen(argv[1],"r");
-    int max_row, max_col;
-    MAP *map =(MAP *)malloc(sizeof(MAP));
-    read_puzzle(puzzle_file, map);
-    for(int i = 0; i < map->max_row; i++) {
-        for(int j = 0; j < map->max_col; j++) {
-            char c = square_at(map, i, j);
-            printf("%c",(char)c);
-        }
-        printf("\n");
-    }
-    fclose(puzzle_file);
-    COORD steps[4];
-    int max=possible_steps(map, 3, 7, steps);
-    for(int s=0; s<max; s++) {
-        int i = steps[s].row;
-        int j = steps[s].col;
-        char c = square_at(map, i, j);
-        printf("%d %d (%c)\n", i, j, (char)c);
-    }
     return 0;
+}
+
+HEIGHT_MAP *read_puzzle(char *filename) {
+   int max_row = 0;
+   int max_col = 0;
+   int row = 0;
+   int col = 0;
+   static char lines[MAX_ROW][MAX_COL];
+   FILE *puzzle_file = fopen(filename, "r");
+   assert(puzzle_file);
+   while(fgets(lines[row], MAX_COL, puzzle_file)) {
+       int l = strcspn(lines[row], "\n");
+       lines[row][l] = '\0';
+       if(max_col < l)
+           max_col = l;
+       row++;
+       max_row = row;
+   }
+   fclose(puzzle_file);
+   HEIGHT_MAP *map = (HEIGHT_MAP *)malloc(sizeof(HEIGHT_MAP));
+   map->max_row = max_row;
+   map->max_col = max_col;
+   map->squares = (char *)malloc(sizeof(char) * map->max_row * map->max_col);
+    for(int row = 0; row < map->max_row; row++) {
+        for(int col = 0; col < map->max_col; col++) {
+            map->squares[row*map->max_col + col] = lines[row][col];
+        }
+    }
+    return map;
+}
+
+void destroy_height_map(HEIGHT_MAP *map) {
+    free(map->squares);
+    free(map);
+}
+
+int adjacent_squares(HEIGHT_MAP *map, COORD coord, COORD *squares) {
+    assert(coord.row >=0 && coord.row < map->max_row && coord.col >= 0 && coord.col < map->max_col);
+    int count = 0;
+    char from = square_at(map, coord);
+    if(from == 'S')
+        from = 'a'-1;
+    COORD adjacents[4] = 
+      { (COORD) { .row = coord.row-1, .col = coord.col },
+        (COORD) { .row = coord.row+1, .col = coord.col },
+        (COORD) { .row = coord.row,   .col = coord.col-1 },
+        (COORD) { .row = coord.row,   .col = coord.col+1 }};
+    for(int i=0; i<4; i++) {
+        COORD adj = adjacents[i];
+        if(adj.row < 0 || adj.row >= map->max_row || adj.col < 0 || adj.col >= map->max_col)
+            continue;
+        char to = square_at(map, adj);
+        if(to - from <= 1) {
+            squares[count++] = adj;
+        }
+    }
+    return count;
 }
 
