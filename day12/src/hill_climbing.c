@@ -128,7 +128,7 @@ HEIGHT_MAP *read_puzzle(char *filename) {
    int max_col = 0;
    int row = 0;
    int col = 0;
-   static char lines[MAX_ROW][MAX_COL];
+   char lines[MAX_ROW][MAX_COL];
    FILE *puzzle_file = fopen(filename, "r");
    assert(puzzle_file);
    while(fgets(lines[row], MAX_COL, puzzle_file)) {
@@ -192,7 +192,14 @@ COORD find_char(HEIGHT_MAP *map, char c) {
 }
 
 POINT *shortest_path(HEIGHT_MAP *map, COORD start, COORD end) {
-    return NULL;
+    POINT *path = (POINT *)malloc(sizeof(POINT));
+    path->coord = start;
+    path->distance = 0;
+    path->predecessor = NULL;
+    MIN_HEAP *heap = new_min_heap(map->max_row * map->max_col);
+
+
+    return path;
 }
 
 void destroy_path(POINT *path) {

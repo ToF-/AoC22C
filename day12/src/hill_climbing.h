@@ -4,11 +4,12 @@ typedef struct {
     int col;
 } COORD;
 
-typedef struct point {
+typedef struct square {
     int distance;
+    char height;
     COORD coord;
     struct point *predecessor;
-} POINT;
+} SQUARE;
 
 typedef struct {
     void **values;
@@ -20,7 +21,7 @@ typedef struct {
 typedef struct {
     int max_row;
     int max_col;
-    char *squares;
+    SQUARE *squares;
 } HEIGHT_MAP;
 
 int process(int argc, char *argv[]);
@@ -33,5 +34,5 @@ void add(MIN_HEAP *heap, void *value);
 void destroy_min_heap(MIN_HEAP *heap, bool destroy_values);
 void *extract_min(MIN_HEAP *heap);
 COORD find_char(HEIGHT_MAP *map, char c);
-POINT *shortest_path(HEIGHT_MAP *map, COORD start, COORD end);
-void destroy_path(POINT *path);
+SQUARE *shortest_path(HEIGHT_MAP *map, COORD start, COORD end);
+void destroy_path(SQUARES *path);
