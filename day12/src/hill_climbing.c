@@ -3,121 +3,108 @@
 #include <string.h>
 #include <limits.h>
 #include <assert.h>
+#include <stdbool.h>
 #include "hill_climbing.h"
 
 const int MAX_ROW = 50;
 const int MAX_COL =100;
 const int CAPACITY = MAX_ROW * MAX_COL;
 
-typedef struct { 
-    int max_row;
-    int max_col;
-    char *squares;
-} MAP;
-
-int node_id(COORD coord) {
-    assert(coord.row >= 0 && coord.row < MAX_ROW && coord.col >= 0 && coord.col < MAX_COL);
-    return coord.row * MAX_COL + coord.col;
-}
-
-COORD coord(int id) {
-    assert(id >= 0 && id < MAX_ROW * MAX_COL);
-    return (COORD) { .row = id / MAX_COL, .col = id % MAX_COL };
-}
-
-void print_value(POINT value) {
-    printf("%d (%d,%d) ", value.distance, value.coord.row, value.coord.col);
-}
 int compare(POINT a, POINT b) {
     return a.distance - b.distance;
 }
 
-void print_heap(HEAP *);
-HEAP *new_min_heap(int capacity) {
-    HEAP *heap = (HEAP *)malloc(sizeof(HEAP));
+MIN_HEAP *new_min_heap(int capacity, int (*compare)(void *, void *)) {
+    MIN_HEAP *heap = (MIN_HEAP *)malloc(sizeof(MIN_HEAP));
+    heap->compare = compare;
     heap->capacity = capacity;
+    heap->values = (void **)malloc(sizeof(void *) * (heap->capacity+1));
     heap->count = 0;
-    heap->values = (POINT *)malloc((heap->capacity) * sizeof(POINT));
     return heap;
 }
-
 int parent(int i) {
-    return ((i+1)/2)-1;
+    return i / 2;
 }
 
 int left_child(int i) {
-    return ((i+1)*2)-1;
+    return i * 2;
 }
 
 int right_child(int i) {
-    return ((i+1)*2);
+    return i * 2 + 1;
 }
 
-int is_lower(HEAP *heap, int i, int j) {
-    return compare(heap->values[i], heap->values[j]) < 0;
+int is_lower(MIN_HEAP *heap, int i, int j) {
+    return heap->compare(heap->values[i], heap->values[j]) < 0;
 }
-int is_upper(HEAP *heap, int i, int j) {
-    return compare(heap->values[i], heap->values[j]) >= 0;
+int is_upper(MIN_HEAP *heap, int i, int j) {
+    return heap->compare(heap->values[i], heap->values[j]) >= 0;
 }
 
-void swap_values(HEAP *heap, int i, int j) {
-    POINT temp = heap->values[i];
+void swap(MIN_HEAP *heap, int i, int j) {
+    void *temp = heap->values[i];
     heap->values[i] = heap->values[j];
     heap->values[j] = temp;
 }
 
-void insert(HEAP *heap, POINT value) {
-    assert(heap->count < heap->capacity);
-    heap->values[heap->count] = value;
-    heap->count++;
-
-    if(heap->count>1) {
-        for(int i = heap->count-1; i>0; i--) {
-            if(is_upper(heap, parent(i), i)) {
-                swap_values(heap, parent(i), i);
-            }
-        }
-    }
-}
-
-void heapify(HEAP *heap, int i) {
+void heapify(MIN_HEAP *heap, int i) {
     int left = left_child(i);
     int right = right_child(i);
     int lowest = i;
-    if(left < heap->count && is_lower(heap, left, lowest)) {
+    if(left <= heap->count && is_lower(heap, left, lowest)) {
         lowest = left;
     }
-    if(right < heap->count && is_lower(heap, right, lowest)) {
+    if(right <= heap->count && is_lower(heap, right, lowest)) {
         lowest = right;
     }
     if(lowest != i) {
-        swap_values(heap, i, lowest);
+        swap(heap, i, lowest);
         heapify(heap, lowest);
     }
 }
 
-void build_min_heap(HEAP *heap) {
+void build_min_heap(MIN_HEAP *heap) {
     for(int i = heap->count / 2; i >= 0; i--) {
         heapify(heap, i);
     }
 }
 
-POINT extract_min(HEAP *heap) {
+void push_down(MIN_HEAP *heap, int i) {
+    if(i == 1) {
+        return;
+    }
+    int parent = i / 2;
+    if(is_lower(heap, i, parent)) {
+        swap(heap, i, parent);
+        push_down(heap, parent);
+    }
+}
+void add(MIN_HEAP *heap, void *value) {
+    assert(heap->count < heap->capacity);
+    heap->count++;
+    heap->values[heap->count] = value;
+    push_down(heap, heap->count);
+}
+void *extract_min(MIN_HEAP *heap) {
     assert(heap->count > 0);
-    POINT min_value = heap->values[0];
-    heap->values[0] = heap->values[heap->count-1];
+    void *min_value = heap->values[1];
+    swap(heap, 1, heap->count);
     heap->count--;
-    heapify(heap, 0);
+    heapify(heap, 1);
     return min_value;
 }
 
-void print_heap(HEAP *heap) {
+void print_heap(MIN_HEAP *heap) {
     for(int i=0; i<heap->count; i++) {
-        printf("%d ", heap->values[i].distance);
+        printf("%d ", ((POINT *)heap->values[i])->distance);
     }
     printf("\n");
 }
-void destroy_heap(HEAP *heap) {
+void destroy_min_heap(MIN_HEAP *heap, bool destroy_values) {
+    if(destroy_values) {
+        for(int i=0; i < heap->count; i++)
+            free(heap->values[i]);
+    }
     free(heap->values);
     free(heap);
 }
@@ -193,3 +180,25 @@ int adjacent_squares(HEIGHT_MAP *map, COORD coord, COORD *squares) {
     return count;
 }
 
+COORD find_char(HEIGHT_MAP *map, char c) {
+    for(int row=0; row < map->max_row; row++) {
+        for(int col=0; col < map->max_col; col++) {
+            COORD coord = { .row = row, .col = col };
+            if(square_at(map,coord) == c)
+                return coord;
+        }
+    }
+    assert(false);
+}
+
+POINT *shortest_path(HEIGHT_MAP *map, COORD start, COORD end) {
+    return NULL;
+}
+
+void destroy_path(POINT *path) {
+    if(path == NULL)
+        return;
+    POINT *predecessor = path->predecessor;
+    free(path);
+    destroy_path(predecessor);
+}

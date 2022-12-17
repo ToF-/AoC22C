@@ -1,18 +1,21 @@
+#include <stdbool.h>
 typedef struct {
     int row;
     int col;
 } COORD;
 
-typedef struct {
+typedef struct point {
     int distance;
     COORD coord;
+    struct point *predecessor;
 } POINT;
 
 typedef struct {
-    POINT *values;
+    void **values;
+    int (* compare)(void *, void *);
     int count;
     int capacity;
-} HEAP;
+} MIN_HEAP;
 
 typedef struct {
     int max_row;
@@ -20,9 +23,15 @@ typedef struct {
     char *squares;
 } HEIGHT_MAP;
 
-void destroy_heap(HEAP *heap);
 int process(int argc, char *argv[]);
 HEIGHT_MAP *read_puzzle(char *filename);
 void destroy_height_map(HEIGHT_MAP *map);
 char square_at(HEIGHT_MAP *map, COORD coord);
 int adjacent_squares(HEIGHT_MAP *map, COORD coord, COORD *squares);
+MIN_HEAP *new_min_heap(int capacity, int (* compare)(void *,void *));
+void add(MIN_HEAP *heap, void *value);
+void destroy_min_heap(MIN_HEAP *heap, bool destroy_values);
+void *extract_min(MIN_HEAP *heap);
+COORD find_char(HEIGHT_MAP *map, char c);
+POINT *shortest_path(HEIGHT_MAP *map, COORD start, COORD end);
+void destroy_path(POINT *path);
