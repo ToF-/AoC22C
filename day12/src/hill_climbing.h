@@ -35,3 +35,4 @@ void destroy_min_heap(MIN_HEAP *heap, bool destroy_values);
 void *extract_min(MIN_HEAP *heap);
 COORD find_char(HEIGHT_MAP *map, char c);
 void set_paths(HEIGHT_MAP *map, COORD start);
+int distance_best_start(HEIGHT_MAP *map);

@@ -222,8 +222,6 @@ void set_paths(HEIGHT_MAP *map, COORD start_coord){
     add(heap, start);
     while(heap->count) {
         SQUARE *square = (SQUARE *)extract_min(heap);
-        printf("visiting");
-        print_square(square);
         SQUARE *adj_squares[4];
         int max_adj = adjacent_squares(map, square->coord, adj_squares);
         for(int i=0; i<max_adj; i++) {
@@ -237,4 +235,46 @@ void set_paths(HEIGHT_MAP *map, COORD start_coord){
         }
     }
     destroy_min_heap(heap, false);
+}
+
+int find_start_coord(HEIGHT_MAP *map, COORD *coords) {
+    int count = 0;
+    for(int row = 0; row < map->max_row; row++)
+        for(int col = 0; col < map->max_col; col++) {
+            COORD coord = (COORD) { .row = row, .col = col };
+            char height = square_at(map, coord)->height;
+            if(height == 'a' || height =='a'-1) {
+                coords[count].row = row;
+                coords[count].col = col;
+                count++;
+            }
+        }
+    return count;
+}
+
+void reset_distances(HEIGHT_MAP *map) {
+    for(int row = 0; row < map->max_row; row++)
+        for(int col = 0; col < map->max_col; col++) {
+            COORD coord = (COORD) { .row = row, .col = col };
+            square_at(map, coord)->distance = DISTANCE_MAX;
+        }
+}
+
+int distance_best_start(HEIGHT_MAP *map) {
+    COORD end_coord = find_char(map, 'E');
+    SQUARE *end_square = square_at(map, end_coord);
+    COORD *start_coords = (COORD *)malloc(sizeof(COORD) * map->max_row * map->max_col);
+    int count = find_start_coord(map, start_coords);
+    int best = DISTANCE_MAX;
+    for(int i=0; i < count; i++) {
+        reset_distances(map);
+        COORD start_coord =  start_coords[i];
+        print_square(square_at(map, start_coord));
+        set_paths(map, start_coord);
+        int distance = end_square->distance;
+        if(distance < best)
+            best = distance;
+        printf("%d %d\n", distance, best);
+    }
+    return best;
 }

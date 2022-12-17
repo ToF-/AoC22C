@@ -27,6 +27,7 @@ CurrentTestName	unity/src/unity_internals.h	/^    const char* CurrentTestName;$/
 CurrentTestStartTime	unity/src/unity_internals.h	/^    UNITY_TIME_TYPE CurrentTestStartTime;$/;"	m	struct:UNITY_STORAGE_T
 CurrentTestStopTime	unity/src/unity_internals.h	/^    UNITY_TIME_TYPE CurrentTestStopTime;$/;"	m	struct:UNITY_STORAGE_T
 DEFINES	unity/extras/memory/test/Makefile	/^DEFINES = -D UNITY_OUTPUT_CHAR=UnityOutputCharSpy_OutputChar$/;"	m
+DISTANCE_MAX	src/hill_climbing.c	/^const int DISTANCE_MAX = 100000;$/;"	v
 DOUBLES_EQUAL	unity/extras/fixture/src/unity_fixture.h	/^#define DOUBLES_EQUAL(/;"	d
 EXPAND_AND_USE_2ND	unity/extras/memory/test/unity_memory_Test.c	/^#define EXPAND_AND_USE_2ND(/;"	d	file:
 EXPECT_ABORT_BEGIN	unity/extras/memory/test/unity_memory_Test.c	/^#define EXPECT_ABORT_BEGIN /;"	d	file:
@@ -70,10 +71,13 @@ TARGET	unity/extras/fixture/test/Makefile	/^TARGET = ..\/build\/fixture_tests.ex
 TARGET	unity/extras/memory/test/Makefile	/^TARGET = ..\/build\/memory_tests.exe$/;"	m
 TEST	makefile	/^TEST=test.out$/;"	m
 TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, can_read_a_puzzle){$/;"	f
+TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, distance_from_best_start) {$/;"	f
 TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, finding_adjacent_squares) {$/;"	f
 TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, finding_start_and_end_of_map) {$/;"	f
 TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, min_heap_adding_and_extracting) {$/;"	f
-TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, shortest_path) {$/;"	f
+TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, puzzle_part_1) {$/;"	f
+TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, puzzle_part_2) {$/;"	f
+TEST	test/hill_climbing_test.c	/^TEST(hill_climbing, set_paths) {$/;"	f
 TEST	unity/extras/fixture/src/unity_fixture.h	/^#define TEST(/;"	d
 TEST	unity/extras/fixture/test/template_fixture_tests.c	/^TEST(mygroup, test1)$/;"	f
 TEST	unity/extras/fixture/test/template_fixture_tests.c	/^TEST(mygroup, test2)$/;"	f
@@ -1020,7 +1024,7 @@ UnityVerbosity	unity/src/unity.c	/^int UnityVerbosity            = 1;$/;"	v
 VAL_UnityOutputCharSpy_OutputChar	unity/extras/memory/test/unity_memory_Test.c	/^#define VAL_UnityOutputCharSpy_OutputChar /;"	d	file:
 Verbose	unity/extras/fixture/src/unity_fixture_internals.h	/^    int Verbose;$/;"	m	struct:UNITY_FIXTURE_T
 add	src/hill_climbing.c	/^void add(MIN_HEAP *heap, void *value) {$/;"	f
-adjacent_squares	src/hill_climbing.c	/^int adjacent_squares(HEIGHT_MAP *map, COORD coord, COORD *squares) {$/;"	f
+adjacent_squares	src/hill_climbing.c	/^int adjacent_squares(HEIGHT_MAP *map, COORD coord, SQUARE **squares) {$/;"	f
 announceTestRun	unity/extras/fixture/src/unity_fixture.c	/^static void announceTestRun(unsigned int runNumber)$/;"	f	file:
 buffer	unity/extras/memory/test/unity_output_Spy.c	/^static char* buffer;$/;"	v	file:
 build_min_heap	src/hill_climbing.c	/^void build_min_heap(MIN_HEAP *heap) {$/;"	f
@@ -1028,7 +1032,7 @@ calloc	unity/extras/memory/src/unity_memory.c	/^#undef calloc$/;"	d	file:
 calloc	unity/extras/memory/src/unity_memory.h	/^#define calloc /;"	d
 capacity	src/hill_climbing.h	/^    int capacity;$/;"	m	struct:__anon2
 col	src/hill_climbing.h	/^    int col;$/;"	m	struct:__anon1
-compare	src/hill_climbing.c	/^int compare(SQUARE a, SQUARE b) {$/;"	f
+compare	src/hill_climbing.c	/^int compare(void *vpa, void *vpb) {$/;"	f
 compare	src/hill_climbing.h	/^    int (* compare)(void *, void *);$/;"	m	struct:__anon2
 compare_ints	test/hill_climbing_test.c	/^int compare_ints(void *vpa, void *vpb) {$/;"	f
 coord	src/hill_climbing.h	/^    COORD coord;$/;"	m	struct:square
@@ -1039,12 +1043,13 @@ dashRNotLast	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char*
 data	unity/extras/fixture/test/template_fixture_tests.c	/^static int data = -1;$/;"	v	file:
 destroy_height_map	src/hill_climbing.c	/^void destroy_height_map(HEIGHT_MAP *map) {$/;"	f
 destroy_min_heap	src/hill_climbing.c	/^void destroy_min_heap(MIN_HEAP *heap, bool destroy_values) {$/;"	f
-destroy_path	src/hill_climbing.c	/^void destroy_path(SQUARE *path) {$/;"	f
 distance	src/hill_climbing.h	/^    int distance;$/;"	m	struct:square
+distance_best_start	src/hill_climbing.c	/^int distance_best_start(HEIGHT_MAP *map) {$/;"	f
 end	unity/extras/memory/src/unity_memory.c	/^static const char end[] = "END";$/;"	v	file:
 extract_min	src/hill_climbing.c	/^void *extract_min(MIN_HEAP *heap) {$/;"	f
 f	unity/src/unity.c	/^    float f;$/;"	m	union:__anon4	file:
 find_char	src/hill_climbing.c	/^COORD find_char(HEIGHT_MAP *map, char c) {$/;"	f
+find_start_coord	src/hill_climbing.c	/^int find_start_coord(HEIGHT_MAP *map, COORD *coords) {$/;"	f
 free	unity/extras/memory/src/unity_memory.c	/^#undef free$/;"	d	file:
 free	unity/extras/memory/src/unity_memory.h	/^#define free /;"	d
 group	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* group[] = {$/;"	v	file:
@@ -1096,9 +1101,10 @@ pointer2	unity/extras/fixture/test/unity_fixture_Test.c	/^static int* pointer2 =
 pointer3	unity/extras/fixture/test/unity_fixture_Test.c	/^static int* pointer3 = (int*)3;$/;"	v	file:
 pointer_index	unity/extras/fixture/src/unity_fixture.c	/^static int pointer_index = 0;$/;"	v	file:
 pointer_store	unity/extras/fixture/src/unity_fixture.c	/^static struct PointerPair pointer_store[UNITY_MAX_POINTERS];$/;"	v	typeref:struct:PointerPair	file:
-predecessor	src/hill_climbing.h	/^    struct point *predecessor;$/;"	m	struct:square	typeref:struct:square::point
+predecessor	src/hill_climbing.h	/^    struct square *predecessor;$/;"	m	struct:square	typeref:struct:square::square
 print_heap	src/hill_climbing.c	/^void print_heap(MIN_HEAP *heap) {$/;"	f
 print_heap_as_ints	test/hill_climbing_test.c	/^void print_heap_as_ints(MIN_HEAP *heap) {$/;"	f
+print_square	src/hill_climbing.c	/^void print_square(SQUARE *square) {$/;"	f
 process	src/hill_climbing.c	/^int process(int argc, char *argv[]) {$/;"	f
 push_down	src/hill_climbing.c	/^void push_down(MIN_HEAP *heap, int i) {$/;"	f
 read_puzzle	src/hill_climbing.c	/^HEIGHT_MAP *read_puzzle(char *filename) {$/;"	f
@@ -1106,6 +1112,7 @@ realloc	unity/extras/memory/src/unity_memory.c	/^#undef realloc$/;"	d	file:
 realloc	unity/extras/memory/src/unity_memory.h	/^#define realloc /;"	d
 release_memory	unity/extras/memory/src/unity_memory.c	/^static void release_memory(void* mem)$/;"	f	file:
 repeat	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* repeat[] = {$/;"	v	file:
+reset_distances	src/hill_climbing.c	/^void reset_distances(HEIGHT_MAP *map) {$/;"	f
 right_child	src/hill_climbing.c	/^int right_child(int i) {$/;"	f
 row	src/hill_climbing.h	/^    int row;$/;"	m	struct:__anon1
 runAllTests	unity/extras/fixture/test/main/AllTests.c	/^static void runAllTests(void)$/;"	f	file:
@@ -1116,7 +1123,7 @@ savedVerbose	unity/extras/fixture/test/unity_fixture_Test.c	/^static int savedVe
 selected	unity/extras/fixture/src/unity_fixture.c	/^static int selected(const char* filter, const char* name)$/;"	f	file:
 setUp	unity/extras/fixture/src/unity_fixture.c	/^void setUp(void)    { \/*does nothing*\/ }$/;"	f
 setUp	unity/extras/memory/test/unity_memory_Test.c	/^void setUp(void) $/;"	f
-shortest_path	src/hill_climbing.c	/^SQUARE *shortest_path(HEIGHT_MAP *map, COORD start, COORD end) {$/;"	f
+set_paths	src/hill_climbing.c	/^void set_paths(HEIGHT_MAP *map, COORD start_coord){$/;"	f
 size	unity/extras/memory/src/unity_memory.c	/^    size_t size;$/;"	m	struct:GuardBytes	file:
 size	unity/extras/memory/test/unity_output_Spy.c	/^static int size;$/;"	v	file:
 spy_enable	unity/extras/memory/test/unity_output_Spy.c	/^static int spy_enable;$/;"	v	file:

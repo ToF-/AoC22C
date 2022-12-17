@@ -101,6 +101,14 @@ TEST(hill_climbing, puzzle_part_1) {
     COORD start = find_char(puzzle_map, 'S');
     COORD end = find_char(puzzle_map, 'E');
     set_paths(puzzle_map, start);
-    TEST_ASSERT_EQUAL_INT(31, square_at(puzzle_map, end)->distance);
+    TEST_ASSERT_EQUAL_INT(412, square_at(puzzle_map, end)->distance);
+    destroy_height_map(puzzle_map);
+}
+TEST(hill_climbing, distance_from_best_start) {
+    TEST_ASSERT_EQUAL_INT(29, distance_best_start(map));
+}
+TEST(hill_climbing, puzzle_part_2) {
+    HEIGHT_MAP *puzzle_map = read_puzzle("puzzle.txt");
+    TEST_ASSERT_EQUAL_INT(402, distance_best_start(puzzle_map));
     destroy_height_map(puzzle_map);
 }
