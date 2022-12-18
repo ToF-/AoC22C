@@ -15,4 +15,5 @@ typedef struct element {
 
 LIST *packet(char *line);
 void destroy_packet(LIST *list);
+void print_packet(LIST *list);
 
