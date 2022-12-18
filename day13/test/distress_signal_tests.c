@@ -9,6 +9,8 @@
 TEST_GROUP(distress_signal);
 
 LIST *list;
+LIST *left;
+LIST *right;
 
 TEST_SETUP(distress_signal) {
     UnityMalloc_StartTest(); // see unity/extras/memory/readme.md
@@ -57,5 +59,35 @@ TEST(distress_signal, reading_a_complex_list) {
     TEST_ASSERT_EQUAL_INT(42, list->tail->tail->head->AS.integer);
     print_packet(list);
     destroy_packet(list);
+}
+TEST(distress_signal, convert_integer_into_list) {
+    list = packet("[4807]");
+    TEST_ASSERT_EQUAL(INTEGER_ELEMENT, list->head->type);
+    TEST_ASSERT_EQUAL_INT(4807, list->head->AS.integer);
+    convert_to_list(list->head);
+    TEST_ASSERT_EQUAL(LIST_ELEMENT, list->head->type);
+    TEST_ASSERT_EQUAL_INT(4807, list->head->AS.list->head->AS.integer);
+    print_packet(list);
+    destroy_packet(list);
+    list = packet("[17,[23,81],42]");
+    convert_to_list(list->head);
+    print_packet(list);
+    destroy_packet(list);
+}
+TEST(distress_signal, right_order_left_smaller_integer) {
+    left = packet("[1,1,3,1,1]"); right=packet("[1,1,5,1,1]");
+    TEST_ASSERT_EQUAL(true, right_order(left, right));
+    TEST_ASSERT_EQUAL(false, right_order(right, left));
+    destroy_packet(left); destroy_packet(right);
+}
 
+TEST(distress_signal, right_order_mixed_types) {
+    left = packet("[[1],[2,3,4]]"); right=packet("[[1],4]");
+    TEST_ASSERT_EQUAL(true, right_order(left, right));
+    print_packet(right);
+    destroy_packet(left); destroy_packet(right);
+
+    left = packet("[9]"); right=packet("[[8,7,6]]");
+    TEST_ASSERT_EQUAL(false, right_order(left, right));
+    destroy_packet(left); destroy_packet(right);
 }

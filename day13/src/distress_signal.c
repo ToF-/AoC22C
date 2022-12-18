@@ -124,3 +124,47 @@ void destroy_packet(LIST *list) {
     }
     free(list);
 }
+
+void convert_to_list(ELEMENT *element) {
+    assert(element->type == INTEGER_ELEMENT);
+    int integer = element->AS.integer;
+    ELEMENT *head_element = (ELEMENT *)malloc(sizeof(ELEMENT));
+    head_element->type = INTEGER_ELEMENT;
+    head_element->AS.integer = integer;
+    LIST *list = new_list();
+    list->head = head_element;
+    list->tail = NULL;
+    element->type = LIST_ELEMENT;
+    element->AS.list = list;
+}
+
+void print_element(ELEMENT *element) {
+    switch(element->type) {
+        case INTEGER_ELEMENT:
+            printf("%d ", element->AS.integer);
+            break;
+        case LIST_ELEMENT:
+            print_packet(element->AS.list);
+            break;
+    }
+}
+
+bool right_order(LIST *a, LIST *b) {
+    LIST *left = a;
+    LIST *right = b;
+    while(true) {
+        print_element(left->head);
+        print_element(right->head);
+        printf("\n");
+        if(right->head->type == INTEGER_ELEMENT && left->head->type == LIST_ELEMENT)
+            convert_to_list(right->head);
+        if(left->head->AS.integer < right->head->AS.integer)
+            return true;
+        if(left->head->AS.integer > right->head->AS.integer)
+            return false;
+        left = left->tail;
+        right = right->tail;
+    }
+}
+
+
