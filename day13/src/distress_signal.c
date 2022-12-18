@@ -11,21 +11,27 @@ const int MAX_LIST_LEVELS = 100;
 ELEM *new_elem(enum ELEM_TYPE type) {
     ELEM *elem = (ELEM *)malloc(sizeof(ELEM));
     elem->type = type;
-    elem->next = NULL;
     switch(elem->type) {
         case INTEGER:
-            elem->value.number = 0;
+            elem->as.number = 0;
             break;
         case LIST:
-            elem->value.head = NULL;
+            elem->as.list = NULL;
             break;
     }
     return elem;
 }
 
 void convert(ELEM *elem, char c) {
-    elem->value.number *= 10;
-    elem->value.number += c-'0';
+    elem->as.number *= 10;
+    elem->as.number += c-'0';
+}
+
+int head_as_number(ELEM *elem){
+    assert(elem->type == LIST);
+    ELEM *head = (ELEM *)elem->as.list->head;
+    assert(head->type == INTEGER);
+    return head->as.number;
 }
 
 void print_packet(ELEM *elem) {
@@ -33,21 +39,20 @@ void print_packet(ELEM *elem) {
         return;
     switch(elem->type) {
         case INTEGER:
-            printf("%d",elem->value.number);
+            printf("%d",elem->as.number);
             break;
         case LIST:
-            printf("(");
-            print_packet(elem->value.head);
-            printf(":");
-            if(elem->next) {
-                printf("[");
-                print_packet(elem->next);
-                printf("]");
+            printf("[");
+            ELEM *head = elem->as.list.head;
+            ELEM *next = elem->as.list.next;
+            if(head) {
+                print_packet(head);
             }
-            else {
-                printf("[]");
+            if(next) {
+                printf(",");
+                print_packet(next);
             }
-            printf(")");
+            printf("]");
             break;
     }
 }
@@ -61,6 +66,22 @@ ELEM *packet(char *line) {
         char c = *line++;
         printf(">%c",c);
         switch(c) {
+            case '[':
+                assert(level < MAX_LIST_LEVELS);
+                stack[level] = new_elem(LIST);
+                current_list = stack[level];
+                level++;
+                break;
+            case ',':
+                current_list->as.list->next = new_elem(LIST);
+                current_list = current_list->as.list->next;
+                break;
+            case ']':
+                in_number = false;
+                --level;
+                assert(level >= 0);
+                current_list = stack[level];
+                break;
             case '0':
             case '1':
             case '2':
@@ -72,34 +93,13 @@ ELEM *packet(char *line) {
             case '8':
             case '9':
                 if(!in_number) {
-                    current->value.head = new_elem(INTEGER);
-                    convert(current->value.head, c);
+                    current_list->as.list->head = new_elem(INTEGER);
+                    convert(current_list->as.list->head, c);
                     in_number = true;
                 } else {
-                    convert(current->value.head, c);
+                    convert(current_lsit->as.lisst->head, c);
                 }
                 in_number = true;
-                break;
-            case '[':
-                in_number = false;
-                assert(level<MAX_LIST_LEVELS);
-                stack[level] = new_elem(LIST);
-                if(current != NULL)
-                    current->next = stack[level];
-                current = stack[level];
-                level++;
-                printf("(level %d)",level);
-                break;
-            case ',':
-                in_number = false;
-                current->next = new_elem(LIST);
-                current = current->next;
-                break;
-            case ']':
-                in_number = false;
-                level--;
-                assert(level>=0);
-                current = stack[level];
                 break;
         }
     }
@@ -114,7 +114,7 @@ void destroy_packet(ELEM *elem) {
         case INTEGER:
             break;
         case LIST:
-            destroy_packet(elem->value.head);
+            destroy_packet(elem->as.head);
             break;
     }
     destroy_packet(elem->next);
