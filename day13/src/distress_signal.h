@@ -1,19 +1,18 @@
-enum ELEM_TYPE { INTEGER, LIST };
+enum ELEMENT_TYPE { INTEGER_ELEMENT, LIST_ELEMENT };
 
-typedef struct cons {
-    void *head;
-    struct cons *next;
-} CONS;
+typedef struct list {
+    struct element *head;
+    struct list    *tail;
+} LIST;
 
-typedef struct elem {
-    enum ELEM_TYPE type;
+typedef struct element {
+    enum ELEMENT_TYPE type;
     union {
-        CONS *list;
-        int number;
-    } as;
-} ELEM;
+        LIST *list;
+        int  integer;
+    } AS;
+} ELEMENT; 
 
-ELEM *packet(char *line);
-void destroy_packet(ELEM *elem);
-void print_packet(ELEM *elem);
-int head_as_number(ELEM *elem);
+LIST *packet(char *line);
+void destroy_packet(LIST *list);
+

@@ -12,6 +12,8 @@ TEST=test.out
 
 MAIN=a.out
 
+TARGET=test.out a.out
+
 SRC_FILES=$(UNITY_ROOT)/src/unity.c $(UNITY_ROOT)/extras/fixture/src/unity_fixture.c  $(UNITY_ROOT)/extras/memory/src/unity_memory.c test/distress_signal_tests.c test/test_runner.c test/all_tests.c src/distress_signal.c
 
 INC_DIRS=-Isrc -I$(UNITY_ROOT)/src -I$(UNITY_ROOT)/extras/fixture/src -I$(UNITY_ROOT)/extras/memory/src
