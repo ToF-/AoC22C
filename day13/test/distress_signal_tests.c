@@ -111,5 +111,19 @@ TEST(distress_signal, right_order_out_of_item) {
     left = packet("[1,[2,[3,[4,[5,6,7]]]],8,9]"); right=packet("[1,[2,[3,[4,[5,6,0]]]],8,9]");
     TEST_ASSERT_EQUAL(1, right_order(left, right));
     destroy_packet(left); destroy_packet(right);
-
+}
+TEST(distress_signal, read_puzzle) {
+    int count;
+    LIST *packets[50];
+    count = read_puzzle(packets, "sample.txt");
+    TEST_ASSERT_EQUAL_INT(16, count);
+    left = packets[14];
+    right = packets[15];
+    TEST_ASSERT_EQUAL(1, right_order(left, right));
+    left = packets[0];
+    right = packets[1];
+    TEST_ASSERT_EQUAL(-1, right_order(left, right));
+    for(int i=0; i<count; i++) {
+        destroy_packet(packets[i]); 
+    }
 }

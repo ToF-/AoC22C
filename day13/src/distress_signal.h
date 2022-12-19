@@ -18,4 +18,4 @@ void destroy_packet(LIST *list);
 void print_packet(LIST *list);
 void convert_to_list(ELEMENT *element);
 int right_order(LIST *left, LIST *right);
-
+int read_puzzle(LIST **lists, char *filename);

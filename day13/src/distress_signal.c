@@ -186,4 +186,20 @@ int right_order(LIST *a, LIST *b) {
     return (!left && right ? -1 : left && !right ? 1 : 0);
 }
 
+const int MAX_LINE = 500;
+int read_puzzle(LIST **lists, char *filename) {
+    char line[MAX_LINE];
+    int count = 0;
+    FILE *puzzle_file = fopen(filename, "r");
+    assert(puzzle_file != NULL);
 
+   while(fgets(line, MAX_LINE, puzzle_file)) {
+       int l = strcspn(line, "\n");
+       line[l] = '\0';
+       if(l > 0) {
+            lists[count++] = packet(line);
+       }
+   } 
+   fclose(puzzle_file);
+   return count;
+}
