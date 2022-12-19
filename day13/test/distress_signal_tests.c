@@ -105,6 +105,9 @@ TEST(distress_signal, right_order_out_of_item) {
     destroy_packet(left); destroy_packet(right);
 
     left = packet("[[[]]]"); right=packet("[[]]");
+    print_packet(left);
+    print_packet(right);
+
     TEST_ASSERT_EQUAL(1, right_order(left, right));
     destroy_packet(left); destroy_packet(right);
 
@@ -145,3 +148,12 @@ TEST(distress_signal, solve_part1_puzzle) {
         destroy_packet(packets[i]); 
     }
 }
+TEST(distress_signal, solve_part2_sample) {
+    int count;
+    LIST *packets[50];
+    TEST_ASSERT_EQUAL(140, solve_part2(packets, "sample.txt"));
+    for(int i=0; i<count+2; i++) {
+        destroy_packet(packets[i]); 
+    }
+}
+

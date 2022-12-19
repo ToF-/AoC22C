@@ -35,6 +35,38 @@ ELEMENT *new_integer_element(char c) {
     return result;
 }
 
+
+LIST *clone_list(LIST *list) {
+    if(list == NULL)
+        return NULL;
+    LIST *clone = (LIST *)malloc(sizeof(LIST));
+    clone->head = NULL;
+    clone->tail = NULL;
+    if(list->head) {
+        clone->head = clone_element(list->head);
+    }
+    if(list->tail) {
+        clone->tail = clone_list(list->tail);
+    }
+    return clone;
+}
+
+ELEMENT *clone_element(ELEMENT *element) {
+    if(element == NULL)
+        return NULL;
+    ELEMENT *clone = (ELEMENT *)malloc(sizeof(ELEMENT));
+    clone->type = element->type;
+    switch(clone->type) {
+        case INTEGER_ELEMENT:
+            clone->AS.integer = element->AS.integer;
+            break;
+        case LIST_ELEMENT:
+            clone->AS.list = clone_list(element->AS.list);
+            break;
+    }
+    return clone;
+}
+
 ELEMENT *accumulate_integer(ELEMENT *element, char c) {
     int acc = element->AS.integer;
     acc = acc * 10 + todigit(c);
@@ -150,9 +182,32 @@ void print_element(ELEMENT *element) {
 }
 
 int right_order(LIST *a, LIST *b) {
-    LIST *left = a;
-    LIST *right = b;
-    while(left && left->head && right && right->head) {
+    LIST *ca = clone_list(a);
+    LIST *cb = clone_list(b);
+    LIST *left = ca;
+    LIST *right = cb;
+    printf("++++\n");
+    print_packet(a);
+    print_packet(b);
+    printf("====\n");
+    print_packet(ca);
+    print_packet(cb);
+    printf("----\n");
+    int result = right_order_rec(left, right);
+    printf("****\n");
+    print_packet(a);
+    print_packet(b);
+    printf("////\n");
+    print_packet(ca);
+    print_packet(cb);
+    destroy_packet(ca);
+    destroy_packet(cb);
+    return result;
+}
+
+int right_order_rec(LIST *left, LIST *right) {
+    int result = 0;
+    while(result == 0 && left && left->head && right && right->head) {
         print_element(left->head);
         print_element(right->head);
         printf("\t");
@@ -165,25 +220,27 @@ int right_order(LIST *a, LIST *b) {
         }
         if(left->head->type == LIST_ELEMENT && right->head->type == LIST_ELEMENT) {
             printf("R\n");
-            int r = right_order(left->head->AS.list, right->head->AS.list);
-            if(r)
-                return r;
+            result = right_order_rec(left->head->AS.list, right->head->AS.list);
         }
         else if(left->head->AS.integer < right->head->AS.integer) {
             printf("T\n");
-            return -1;
+            result = -1;
+            continue;
         }
         else if(left->head->AS.integer > right->head->AS.integer) {
             printf("F\n");
-            return +1;
+            result = 1;
+            continue;
         }
         left = left->tail;
         right = right->tail;
     }
     if(left && right) {
-        return (!left->head && right->head ? -1 : left->head && !right->head ? 1 : 0);
-    } 
-    return (!left && right ? -1 : left && !right ? 1 : 0);
+        result = (!left->head && right->head ? -1 : left->head && !right->head ? 1 : 0);
+    } else { 
+        result = (!left && right ? -1 : left && !right ? 1 : 0);
+    }
+    return result;
 }
 
 const int MAX_LINE = 500;
@@ -217,4 +274,44 @@ int solve_part1(LIST **lists, int count) {
         }
     }
     return sum;
+}
+
+int compare(const void *pa, const void *pb) {
+    LIST *left = (LIST *)pa;
+    LIST *right= (LIST *)pb;
+    if(right_order(left, right)) {
+        return -1;
+    } else {
+        return 1;
+    }
+}
+
+int solve_part2(LIST **lists, char *filename) {
+    int count = read_puzzle(lists, filename);
+    int div1_pos, div2_pos;
+    LIST *divider1 = packet("[[2]]");
+    LIST *divider2 = packet("[[6]]");
+    lists[count++] = divider1;
+    lists[count++] = divider2;
+    for(int i=0; i<count; i++)
+        print_packet(lists[i]);
+    getchar();
+    qsort(lists, count, sizeof(LIST *), compare);
+    for(int i=0; i<count; i++)
+        print_packet(lists[i]);
+    getchar();
+    printf("\n");
+    for(int i=0; i<count; i++) {
+        printf("%d:", i);
+        print_packet(lists[i]);
+        if(lists[i] == divider1) {
+            div1_pos = i+1;
+            printf("divider 1 is in pos:%d\n", div1_pos);
+        }
+        if(lists[i] == divider2) {
+            div2_pos = i+1;
+            printf("divider 2 is in pos:%d\n", div2_pos);
+        }
+    }
+    return div1_pos * div2_pos;
 }

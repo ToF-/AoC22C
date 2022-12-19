@@ -48,6 +48,8 @@ LIST_ELEMENT	src/distress_signal.h	/^enum ELEMENT_TYPE { INTEGER_ELEMENT, LIST_E
 LONGS_EQUAL	unity/extras/fixture/src/unity_fixture.h	/^#define LONGS_EQUAL(/;"	d
 MAIN	makefile	/^MAIN=a.out$/;"	m
 MALLOC_DONT_FAIL	unity/extras/memory/src/unity_memory.c	/^#define MALLOC_DONT_FAIL /;"	d	file:
+MAX_LINE	src/distress_signal.c	/^const int MAX_LINE = 500;$/;"	v
+MAX_LIST_LEVEL	src/distress_signal.c	/^const int MAX_LIST_LEVEL = 100;$/;"	v
 NameFilter	unity/extras/fixture/src/unity_fixture_internals.h	/^    const char* NameFilter;$/;"	m	struct:UNITY_FIXTURE_T
 NumberOfTests	unity/src/unity_internals.h	/^    UNITY_COUNTER_TYPE NumberOfTests;$/;"	m	struct:UNITY_STORAGE_T
 PROGMEM	unity/src/unity.c	/^#define PROGMEM$/;"	d	file:
@@ -69,8 +71,19 @@ TARGET	makefile	/^TARGET=test.out a.out$/;"	m
 TARGET	unity/extras/fixture/test/Makefile	/^TARGET = ..\/build\/fixture_tests.exe$/;"	m
 TARGET	unity/extras/memory/test/Makefile	/^TARGET = ..\/build\/memory_tests.exe$/;"	m
 TEST	makefile	/^TEST=test.out$/;"	m
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, convert_integer_into_list) {$/;"	f
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, read_puzzle) {$/;"	f
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, reading_a_complex_list) {$/;"	f
 TEST	test/distress_signal_tests.c	/^TEST(distress_signal, reading_a_single_integer_packet) {$/;"	f
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, reading_a_sublist) {$/;"	f
 TEST	test/distress_signal_tests.c	/^TEST(distress_signal, reading_empty_packet){$/;"	f
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, reading_several_integers) {$/;"	f
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, right_order_left_smaller_integer) {$/;"	f
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, right_order_mixed_types) {$/;"	f
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, right_order_out_of_item) {$/;"	f
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, solve_part1_puzzle) {$/;"	f
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, solve_part1_sample) {$/;"	f
+TEST	test/distress_signal_tests.c	/^TEST(distress_signal, solve_part2_sample) {$/;"	f
 TEST	unity/extras/fixture/src/unity_fixture.h	/^#define TEST(/;"	d
 TEST	unity/extras/fixture/test/template_fixture_tests.c	/^TEST(mygroup, test1)$/;"	f
 TEST	unity/extras/fixture/test/template_fixture_tests.c	/^TEST(mygroup, test2)$/;"	f
@@ -1016,10 +1029,12 @@ UnityTestRunner	unity/extras/fixture/src/unity_fixture.c	/^void UnityTestRunner(
 UnityVerbosity	unity/src/unity.c	/^int UnityVerbosity            = 1;$/;"	v
 VAL_UnityOutputCharSpy_OutputChar	unity/extras/memory/test/unity_memory_Test.c	/^#define VAL_UnityOutputCharSpy_OutputChar /;"	d	file:
 Verbose	unity/extras/fixture/src/unity_fixture_internals.h	/^    int Verbose;$/;"	m	struct:UNITY_FIXTURE_T
+accumulate_integer	src/distress_signal.c	/^ELEMENT *accumulate_integer(ELEMENT *element, char c) {$/;"	f
 announceTestRun	unity/extras/fixture/src/unity_fixture.c	/^static void announceTestRun(unsigned int runNumber)$/;"	f	file:
 buffer	unity/extras/memory/test/unity_output_Spy.c	/^static char* buffer;$/;"	v	file:
 calloc	unity/extras/memory/src/unity_memory.c	/^#undef calloc$/;"	d	file:
 calloc	unity/extras/memory/src/unity_memory.h	/^#define calloc /;"	d
+convert_to_list	src/distress_signal.c	/^void convert_to_list(ELEMENT *element) {$/;"	f
 count	unity/extras/memory/test/unity_output_Spy.c	/^static int count;$/;"	v	file:
 d	unity/src/unity.c	/^    double d;$/;"	m	union:__anon2	file:
 dashRNotLast	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* dashRNotLast[] = {$/;"	v	file:
@@ -1048,6 +1063,7 @@ integer	src/distress_signal.h	/^        int  integer;$/;"	m	union:element::__ano
 isOverrun	unity/extras/memory/src/unity_memory.c	/^static int isOverrun(void* mem)$/;"	f	file:
 isinf	unity/src/unity_internals.h	/^#define isinf(/;"	d
 isnan	unity/src/unity_internals.h	/^#define isnan(/;"	d
+left	test/distress_signal_tests.c	/^LIST *left;$/;"	v
 list	src/distress_signal.h	/^        LIST *list;$/;"	m	union:element::__anon1
 list	src/distress_signal.h	/^typedef struct list {$/;"	s
 list	test/distress_signal_tests.c	/^LIST *list;$/;"	v
@@ -1061,6 +1077,9 @@ malloc_fail_countdown	unity/extras/memory/src/unity_memory.c	/^static int malloc
 multiple	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* multiple[] = {$/;"	v	file:
 mygroup	unity/extras/fixture/test/template_fixture_tests.c	/^TEST_GROUP(mygroup);$/;"	v
 name	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* name[] = {$/;"	v	file:
+new_integer_element	src/distress_signal.c	/^ELEMENT *new_integer_element(char c) {$/;"	f
+new_list	src/distress_signal.c	/^LIST *new_list() {$/;"	f
+new_list_element	src/distress_signal.c	/^ELEMENT *new_list_element(LIST *list) {$/;"	f
 noOptions	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* noOptions[] = {$/;"	v	file:
 noreturn	unity/src/unity_internals.h	/^void UnityFail(const char* message, const UNITY_LINE_TYPE line) UNITY_FUNCTION_ATTR(noreturn);$/;"	v
 noreturn	unity/src/unity_internals.h	/^void UnityIgnore(const char* message, const UNITY_LINE_TYPE line) UNITY_FUNCTION_ATTR(noreturn);$/;"	v
@@ -1074,10 +1093,16 @@ pointer2	unity/extras/fixture/test/unity_fixture_Test.c	/^static int* pointer2 =
 pointer3	unity/extras/fixture/test/unity_fixture_Test.c	/^static int* pointer3 = (int*)3;$/;"	v	file:
 pointer_index	unity/extras/fixture/src/unity_fixture.c	/^static int pointer_index = 0;$/;"	v	file:
 pointer_store	unity/extras/fixture/src/unity_fixture.c	/^static struct PointerPair pointer_store[UNITY_MAX_POINTERS];$/;"	v	typeref:struct:PointerPair	file:
+print_element	src/distress_signal.c	/^void print_element(ELEMENT *element) {$/;"	f
+print_list	src/distress_signal.c	/^void print_list(LIST *list, bool is_tail) {$/;"	f
+print_packet	src/distress_signal.c	/^void print_packet(LIST *list) {$/;"	f
+read_puzzle	src/distress_signal.c	/^int read_puzzle(LIST **lists, char *filename) {$/;"	f
 realloc	unity/extras/memory/src/unity_memory.c	/^#undef realloc$/;"	d	file:
 realloc	unity/extras/memory/src/unity_memory.h	/^#define realloc /;"	d
 release_memory	unity/extras/memory/src/unity_memory.c	/^static void release_memory(void* mem)$/;"	f	file:
 repeat	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* repeat[] = {$/;"	v	file:
+right	test/distress_signal_tests.c	/^LIST *right;$/;"	v
+right_order	src/distress_signal.c	/^int right_order(LIST *a, LIST *b) {$/;"	f
 runAllTests	unity/extras/fixture/test/main/AllTests.c	/^static void runAllTests(void)$/;"	f	file:
 savedGroup	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* savedGroup;$/;"	v	file:
 savedName	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* savedName;$/;"	v	file:
@@ -1088,6 +1113,8 @@ setUp	unity/extras/fixture/src/unity_fixture.c	/^void setUp(void)    { \/*does n
 setUp	unity/extras/memory/test/unity_memory_Test.c	/^void setUp(void) $/;"	f
 size	unity/extras/memory/src/unity_memory.c	/^    size_t size;$/;"	m	struct:GuardBytes	file:
 size	unity/extras/memory/test/unity_output_Spy.c	/^static int size;$/;"	v	file:
+solve_part1	src/distress_signal.c	/^int solve_part1(LIST **lists, int count) {$/;"	f
+solve_part2	src/distress_signal.c	/^int solve_part2(char *filename) {$/;"	f
 spy_enable	unity/extras/memory/test/unity_output_Spy.c	/^static int spy_enable;$/;"	v	file:
 tail	src/distress_signal.h	/^    struct list    *tail;$/;"	m	struct:list	typeref:struct:list::list
 tearDown	unity/extras/fixture/src/unity_fixture.c	/^void tearDown(void) { \/*does nothing*\/ }$/;"	f

@@ -20,3 +20,7 @@ void convert_to_list(ELEMENT *element);
 int right_order(LIST *left, LIST *right);
 int read_puzzle(LIST **lists, char *filename);
 int solve_part1(LIST **lists, int count);
+int solve_part2(LIST **lists, char *filename);
+ELEMENT *clone_element(ELEMENT *element);
+LIST *clone_list(LIST *list);
+int right_order_rec(LIST *left, LIST *right);
