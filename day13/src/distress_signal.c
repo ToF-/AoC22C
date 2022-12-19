@@ -149,22 +149,41 @@ void print_element(ELEMENT *element) {
     }
 }
 
-bool right_order(LIST *a, LIST *b) {
+int right_order(LIST *a, LIST *b) {
     LIST *left = a;
     LIST *right = b;
-    while(true) {
+    while(left && left->head && right && right->head) {
         print_element(left->head);
         print_element(right->head);
-        printf("\n");
-        if(right->head->type == INTEGER_ELEMENT && left->head->type == LIST_ELEMENT)
+        printf("\t");
+        if(right->head->type == INTEGER_ELEMENT && left->head->type == LIST_ELEMENT) {
+            printf("C\n");
             convert_to_list(right->head);
-        if(left->head->AS.integer < right->head->AS.integer)
-            return true;
-        if(left->head->AS.integer > right->head->AS.integer)
-            return false;
+        }else if(left->head->type == INTEGER_ELEMENT && right->head->type == LIST_ELEMENT) {
+            printf("C\n");
+            convert_to_list(left->head);
+        }
+        if(left->head->type == LIST_ELEMENT && right->head->type == LIST_ELEMENT) {
+            printf("R\n");
+            int r = right_order(left->head->AS.list, right->head->AS.list);
+            if(r)
+                return r;
+        }
+        else if(left->head->AS.integer < right->head->AS.integer) {
+            printf("T\n");
+            return -1;
+        }
+        else if(left->head->AS.integer > right->head->AS.integer) {
+            printf("F\n");
+            return +1;
+        }
         left = left->tail;
         right = right->tail;
     }
+    if(left && right) {
+        return (!left->head && right->head ? -1 : left->head && !right->head ? 1 : 0);
+    } 
+    return (!left && right ? -1 : left && !right ? 1 : 0);
 }
 
 

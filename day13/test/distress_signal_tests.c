@@ -76,18 +76,40 @@ TEST(distress_signal, convert_integer_into_list) {
 }
 TEST(distress_signal, right_order_left_smaller_integer) {
     left = packet("[1,1,3,1,1]"); right=packet("[1,1,5,1,1]");
-    TEST_ASSERT_EQUAL(true, right_order(left, right));
-    TEST_ASSERT_EQUAL(false, right_order(right, left));
+    TEST_ASSERT_EQUAL(-1, right_order(left, right));
+    TEST_ASSERT_EQUAL(1, right_order(right, left));
     destroy_packet(left); destroy_packet(right);
 }
 
 TEST(distress_signal, right_order_mixed_types) {
     left = packet("[[1],[2,3,4]]"); right=packet("[[1],4]");
-    TEST_ASSERT_EQUAL(true, right_order(left, right));
+    TEST_ASSERT_EQUAL(-1, right_order(left, right));
     print_packet(right);
     destroy_packet(left); destroy_packet(right);
 
     left = packet("[9]"); right=packet("[[8,7,6]]");
-    TEST_ASSERT_EQUAL(false, right_order(left, right));
+    TEST_ASSERT_EQUAL(1, right_order(left, right));
     destroy_packet(left); destroy_packet(right);
+}
+TEST(distress_signal, right_order_out_of_item) {
+    left = packet("[[4,4],4,4]"); right=packet("[[4,4],4,4,4]");
+    TEST_ASSERT_EQUAL(-1, right_order(left, right));
+    destroy_packet(left); destroy_packet(right);
+
+    left = packet("[7,7,7,7]"); right=packet("[7,7,7]");
+    TEST_ASSERT_EQUAL(1, right_order(left, right));
+    destroy_packet(left); destroy_packet(right);
+
+    left = packet("[]"); right=packet("[3]");
+    TEST_ASSERT_EQUAL(-1, right_order(left, right));
+    destroy_packet(left); destroy_packet(right);
+
+    left = packet("[[[]]]"); right=packet("[[]]");
+    TEST_ASSERT_EQUAL(1, right_order(left, right));
+    destroy_packet(left); destroy_packet(right);
+
+    left = packet("[1,[2,[3,[4,[5,6,7]]]],8,9]"); right=packet("[1,[2,[3,[4,[5,6,0]]]],8,9]");
+    TEST_ASSERT_EQUAL(1, right_order(left, right));
+    destroy_packet(left); destroy_packet(right);
+
 }
