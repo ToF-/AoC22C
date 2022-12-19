@@ -20,54 +20,26 @@ LIST *new_list() {
 }
 
 ELEMENT *new_list_element(LIST *list) {
-    ELEMENT *result;
-    result = (ELEMENT *)malloc(sizeof(ELEMENT));
-    result->type = LIST_ELEMENT;
-    result->AS.list = list;
-    return result;
+    ELEMENT *element;
+    element = (ELEMENT *)malloc(sizeof(ELEMENT));
+    element->type = LIST_ELEMENT;
+    element->AS.list = list;
+    assert(element->type == INTEGER_ELEMENT || element->type == LIST_ELEMENT);
+    return element;
 }
 
 ELEMENT *new_integer_element(char c) {
-    ELEMENT *result;
-    result = (ELEMENT *)malloc(sizeof(ELEMENT));
-    result->type = INTEGER_ELEMENT;
-    result->AS.integer = todigit(c);
-    return result;
+    ELEMENT *element;
+    element = (ELEMENT *)malloc(sizeof(ELEMENT));
+    element->type = INTEGER_ELEMENT;
+    element->AS.integer = todigit(c);
+    assert(element->type == INTEGER_ELEMENT || element->type == LIST_ELEMENT);
+    return element;
 }
 
-
-LIST *clone_list(LIST *list) {
-    if(list == NULL)
-        return NULL;
-    LIST *clone = (LIST *)malloc(sizeof(LIST));
-    clone->head = NULL;
-    clone->tail = NULL;
-    if(list->head) {
-        clone->head = clone_element(list->head);
-    }
-    if(list->tail) {
-        clone->tail = clone_list(list->tail);
-    }
-    return clone;
-}
-
-ELEMENT *clone_element(ELEMENT *element) {
-    if(element == NULL)
-        return NULL;
-    ELEMENT *clone = (ELEMENT *)malloc(sizeof(ELEMENT));
-    clone->type = element->type;
-    switch(clone->type) {
-        case INTEGER_ELEMENT:
-            clone->AS.integer = element->AS.integer;
-            break;
-        case LIST_ELEMENT:
-            clone->AS.list = clone_list(element->AS.list);
-            break;
-    }
-    return clone;
-}
 
 ELEMENT *accumulate_integer(ELEMENT *element, char c) {
+    assert(element->type == INTEGER_ELEMENT || element->type == LIST_ELEMENT);
     int acc = element->AS.integer;
     acc = acc * 10 + todigit(c);
     element->AS.integer = acc;
@@ -79,8 +51,6 @@ const int MAX_LIST_LEVEL = 100;
 LIST *packet(char *entry) {
     char c;
     LIST *result = new_list();
-    c = *entry++;
-    assert(c == '[');
     c = *entry++;
     bool in_number = false;
     LIST *stack[MAX_LIST_LEVEL];
@@ -103,16 +73,22 @@ LIST *packet(char *entry) {
                 break;
             case '[':
                 current->head = new_list_element(new_list());
+                assert(current->head->type == INTEGER_ELEMENT || current->head->type == LIST_ELEMENT);
                 stack[level++] = current;
                 current = current->head->AS.list;
                 break;
             case ']':
                 --level;
+                assert(level>=0);
                 current = stack[level];
                 break;
         }
         c = *entry++;
     }
+    assert(result);
+    assert(result->head);
+    ELEMENT *element = result->head;
+    assert(element->type == INTEGER_ELEMENT || element->type == LIST_ELEMENT);
     return result;
 }
 
@@ -157,19 +133,6 @@ void destroy_packet(LIST *list) {
     free(list);
 }
 
-void convert_to_list(ELEMENT *element) {
-    assert(element->type == INTEGER_ELEMENT);
-    int integer = element->AS.integer;
-    ELEMENT *head_element = (ELEMENT *)malloc(sizeof(ELEMENT));
-    head_element->type = INTEGER_ELEMENT;
-    head_element->AS.integer = integer;
-    LIST *list = new_list();
-    list->head = head_element;
-    list->tail = NULL;
-    element->type = LIST_ELEMENT;
-    element->AS.list = list;
-}
-
 void print_element(ELEMENT *element) {
     switch(element->type) {
         case INTEGER_ELEMENT:
@@ -181,66 +144,55 @@ void print_element(ELEMENT *element) {
     }
 }
 
-int right_order(LIST *a, LIST *b) {
-    LIST *ca = clone_list(a);
-    LIST *cb = clone_list(b);
-    LIST *left = ca;
-    LIST *right = cb;
-    printf("++++\n");
-    print_packet(a);
-    print_packet(b);
-    printf("====\n");
-    print_packet(ca);
-    print_packet(cb);
-    printf("----\n");
-    int result = right_order_rec(left, right);
-    printf("****\n");
-    print_packet(a);
-    print_packet(b);
-    printf("////\n");
-    print_packet(ca);
-    print_packet(cb);
-    destroy_packet(ca);
-    destroy_packet(cb);
-    return result;
+
+LIST *new_singleton(int integer) {
+    LIST *singleton;
+    ELEMENT *element = (ELEMENT *)malloc(sizeof(ELEMENT));
+    element->type = INTEGER_ELEMENT;
+    element->AS.integer = integer;
+    singleton = new_list();
+    singleton->head = element;
+    singleton->tail = NULL;
+    return singleton;
 }
 
-int right_order_rec(LIST *left, LIST *right) {
-    int result = 0;
-    while(result == 0 && left && left->head && right && right->head) {
-        print_element(left->head);
-        print_element(right->head);
-        printf("\t");
-        if(right->head->type == INTEGER_ELEMENT && left->head->type == LIST_ELEMENT) {
-            printf("C\n");
-            convert_to_list(right->head);
-        }else if(left->head->type == INTEGER_ELEMENT && right->head->type == LIST_ELEMENT) {
-            printf("C\n");
-            convert_to_list(left->head);
-        }
-        if(left->head->type == LIST_ELEMENT && right->head->type == LIST_ELEMENT) {
-            printf("R\n");
-            result = right_order_rec(left->head->AS.list, right->head->AS.list);
-        }
-        else if(left->head->AS.integer < right->head->AS.integer) {
-            printf("T\n");
-            result = -1;
-            continue;
-        }
-        else if(left->head->AS.integer > right->head->AS.integer) {
-            printf("F\n");
-            result = 1;
-            continue;
-        }
-        left = left->tail;
-        right = right->tail;
+int compare_elements(ELEMENT *a, ELEMENT *b) {
+    assert(a != NULL);
+    assert(b != NULL);
+    int types = a->type * 10 + b->type;
+    switch(types) {
+        case 00: return a->AS.integer - b->AS.integer;
+        case 11: return compare_lists(a->AS.list, b->AS.list);
+        case 01: return compare_lists(new_singleton(a->AS.integer), b->AS.list);
+        case 10: return compare_lists(a->AS.list, new_singleton(b->AS.integer));
     }
-    if(left && right) {
-        result = (!left->head && right->head ? -1 : left->head && !right->head ? 1 : 0);
-    } else { 
-        result = (!left && right ? -1 : left && !right ? 1 : 0);
+    return 0;
+}
+
+int compare_lists(LIST *a, LIST *b) {
+    assert(a != NULL);
+    assert(b != NULL);
+    int lists;
+    lists = (a->head == NULL ? 0 : 10) + (b->head == NULL ? 0 : 1);
+    switch(lists) {
+        case 00: return 0;
+        case 01: return -1;
+        case 10: return 1;
     }
-    return result;
+    assert(a->head != NULL);
+    assert(b->head != NULL);
+    int cmp_element = compare_elements(a->head, b->head);
+    if(cmp_element == 0) {
+        lists = (a->tail == NULL ? 0 : 10) + (b->tail == NULL ? 0 : 1);
+        switch(lists) {
+            case 00: return 0;
+            case 01: return -1;
+            case 10: return 1;
+            case 11: return compare_lists(a->tail, b->tail);
+        }
+        return 0;
+    } else
+        return cmp_element;
 }
 
 const int MAX_LINE = 500;
@@ -269,21 +221,59 @@ int solve_part1(LIST **lists, int count) {
         pair = i/2 + 1;
         LIST *left  = lists[i];
         LIST *right = lists[i+1];
-        if(right_order(left, right) == -1) {
+        if(compare_lists(left, right) < 0) {
             sum += pair; 
         }
     }
     return sum;
 }
 
-int compare(const void *pa, const void *pb) {
-    LIST *left = (LIST *)pa;
-    LIST *right= (LIST *)pb;
-    if(right_order(left, right)) {
-        return -1;
-    } else {
-        return 1;
+void print_debug_element(ELEMENT *element) {
+    if(element == NULL) {
+        printf("$");
+        return;
     }
+    if((element->type != INTEGER_ELEMENT) && (element->type != LIST_ELEMENT)) {
+        printf("%p", (void *)element);
+    }
+    switch(element->type) {
+        case INTEGER_ELEMENT:
+            printf("%d", element->AS.integer);
+            return;
+        case LIST_ELEMENT:
+            print_debug_list(element->AS.list);
+            return;
+    }
+    printf("?");
+    return;
+}
+
+void print_debug_list(LIST *list) {
+    if(list == NULL) {
+        printf("_");
+        return;
+    }
+    // printf("%p\t", (void *)list);
+    if(list->head == NULL) {
+        printf("#");
+        return;
+    }
+    printf("(");
+    print_debug_element(list->head);
+    printf(":");
+    print_debug_list(list->tail);
+    printf(")");
+}
+
+int compare(const void *pa, const void *pb) {
+    LIST *a = (LIST *)pa;
+    LIST *b = (LIST *)pb;
+    printf("\ncomparing\n");
+    print_debug_list(a);
+    printf("\nand\n");
+    print_debug_list(b);
+    printf("\n");
+    return compare_lists(a, b);
 }
 
 int solve_part2(LIST **lists, char *filename) {
@@ -293,14 +283,22 @@ int solve_part2(LIST **lists, char *filename) {
     LIST *divider2 = packet("[[6]]");
     lists[count++] = divider1;
     lists[count++] = divider2;
-    for(int i=0; i<count; i++)
-        print_packet(lists[i]);
-    getchar();
-    qsort(lists, count, sizeof(LIST *), compare);
-    for(int i=0; i<count; i++)
-        print_packet(lists[i]);
-    getchar();
-    printf("\n");
+    for(int j=0; j<count-2; j++) {
+        for(int i=j+1; i<count; i++) {
+            assert(lists[j]);
+            assert(lists[i]);
+            if(compare_lists(lists[i],lists[j]) < 0) {
+                LIST *temp = lists[i];
+                lists[i] = lists[j];
+                lists[j] = temp;
+            }
+        }
+    }
+    for(int i=0; i<count; i++) {
+        print_debug_list(lists[i]);
+        printf("\n");
+    }
+    printf("-----------\n");
     for(int i=0; i<count; i++) {
         printf("%d:", i);
         print_packet(lists[i]);
