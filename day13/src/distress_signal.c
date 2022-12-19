@@ -203,3 +203,18 @@ int read_puzzle(LIST **lists, char *filename) {
    fclose(puzzle_file);
    return count;
 }
+
+
+int solve_part1(LIST **lists, int count) {
+    int sum = 0;
+    int pair = 0;
+    for(int i=0; i<count; i+= 2) {
+        pair = i/2 + 1;
+        LIST *left  = lists[i];
+        LIST *right = lists[i+1];
+        if(right_order(left, right) == -1) {
+            sum += pair; 
+        }
+    }
+    return sum;
+}

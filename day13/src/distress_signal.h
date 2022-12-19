@@ -19,3 +19,4 @@ void print_packet(LIST *list);
 void convert_to_list(ELEMENT *element);
 int right_order(LIST *left, LIST *right);
 int read_puzzle(LIST **lists, char *filename);
+int solve_part1(LIST **lists, int count);

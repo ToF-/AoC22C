@@ -127,3 +127,21 @@ TEST(distress_signal, read_puzzle) {
         destroy_packet(packets[i]); 
     }
 }
+TEST(distress_signal, solve_part1_sample) {
+    int count;
+    LIST *packets[50];
+    count = read_puzzle(packets, "sample.txt");
+    TEST_ASSERT_EQUAL(13, solve_part1(packets, count));
+    for(int i=0; i<count; i++) {
+        destroy_packet(packets[i]); 
+    }
+}
+TEST(distress_signal, solve_part1_puzzle) {
+    int count;
+    LIST *packets[500];
+    count = read_puzzle(packets, "puzzle.txt");
+    TEST_ASSERT_EQUAL(5682, solve_part1(packets, count));
+    for(int i=0; i<count; i++) {
+        destroy_packet(packets[i]); 
+    }
+}
