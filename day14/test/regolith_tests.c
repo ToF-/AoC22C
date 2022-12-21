@@ -11,7 +11,6 @@ TEST_GROUP(regolith);
 CAVE *cave;
 
 TEST_SETUP(regolith) {
-    cave = read_puzzle("sample.txt");
     UnityMalloc_StartTest(); // see unity/extras/memory/readme.md
 }
 TEST_TEAR_DOWN(regolith) {
@@ -19,8 +18,9 @@ TEST_TEAR_DOWN(regolith) {
     UnityMalloc_EndTest();
 }
 TEST(regolith, read_puzzle) {
-    TEST_ASSERT_EQUAL_INT(503, cave->width);
-    TEST_ASSERT_EQUAL_INT(9,   cave->heigth);
+    cave = read_puzzle("sample.txt");
+    TEST_ASSERT_EQUAL_INT(1006, cave->width);
+    TEST_ASSERT_EQUAL_INT(18,   cave->height);
     TEST_ASSERT_EQUAL_CHAR('.', at(cave, 498,0));
     TEST_ASSERT_EQUAL_CHAR('#', at(cave, 498,4));
     TEST_ASSERT_EQUAL_CHAR('#', at(cave, 498,5));
@@ -30,11 +30,29 @@ TEST(regolith, read_puzzle) {
     TEST_ASSERT_EQUAL_CHAR('#', at(cave, 503,4));
     TEST_ASSERT_EQUAL_CHAR('#', at(cave, 502,4));
     TEST_ASSERT_EQUAL_CHAR('#', at(cave, 494,9));
+    print_cave(cave);
 }
 TEST(regolith, sand_falling) {
-    TEST_ASSERT_TRUE(sand_fall(cave));
+    cave = read_puzzle("sample.txt");
+    TEST_ASSERT_TRUE(sand_fall(cave, 500, 0));
     TEST_ASSERT_EQUAL_CHAR('o', at(cave, 500,8));
-    TEST_ASSERT_TRUE(sand_fall(cave));
+    TEST_ASSERT_TRUE(sand_fall(cave, 500, 0));
     TEST_ASSERT_EQUAL_CHAR('o', at(cave, 499,8));
-    
+    TEST_ASSERT_TRUE(sand_fall(cave, 500, 0));
+    TEST_ASSERT_EQUAL_CHAR('o', at(cave, 501,8));
+    for(int i=3; i<24; i++) {
+        TEST_ASSERT_TRUE(sand_fall(cave, 500, 0));
+    }
+    print_cave(cave);
+    TEST_ASSERT_FALSE(sand_fall(cave, 500, 0));
+}
+TEST(regolith, solve_part1_sample) {
+    cave = read_puzzle("sample.txt");
+    TEST_ASSERT_EQUAL_INT(24, stopped_sand(cave));
+}
+TEST(regolith, solve_part1_puzzle) {
+    cave=read_puzzle("puzzle.txt");
+    print_cave(cave);
+    TEST_ASSERT_EQUAL_INT(817, stopped_sand(cave));
+    print_cave(cave);
 }

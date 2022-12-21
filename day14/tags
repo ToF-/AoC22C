@@ -4,15 +4,17 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-AIR	src/regolith.c	/^const char AIR = '.';$/;"	v
+AIR	src/regolith.c	/^const char AIR  = '.';$/;"	v
 ASSIGN_VALUE	unity/extras/memory/test/unity_memory_Test.c	/^#define ASSIGN_VALUE(/;"	d	file:
 AbortFrame	unity/src/unity_internals.h	/^    jmp_buf AbortFrame;$/;"	m	struct:UNITY_STORAGE_T
 BUILD_DIR	unity/extras/fixture/test/Makefile	/^BUILD_DIR = ..\/build$/;"	m
 BUILD_DIR	unity/extras/memory/test/Makefile	/^BUILD_DIR = ..\/build$/;"	m
+CAVE	src/regolith.h	/^} CAVE;$/;"	t	typeref:struct:cave
 CC	unity/extras/fixture/test/Makefile	/^CC = clang$/;"	m
 CC	unity/extras/fixture/test/Makefile	/^CC = gcc$/;"	m
 CC	unity/extras/memory/test/Makefile	/^CC = clang$/;"	m
 CC	unity/extras/memory/test/Makefile	/^CC = gcc$/;"	m
+CFLAGS	makefile	/^CFLAGS = -std=c11 -pedantic$/;"	m
 CHECK	unity/extras/fixture/src/unity_fixture.h	/^#define CHECK(/;"	d
 CLEANUP	makefile	/^CLEANUP = rm -f$/;"	m
 C_COMPILER	makefile	/^C_COMPILER=clang$/;"	m
@@ -44,9 +46,10 @@ LONGS_EQUAL	unity/extras/fixture/src/unity_fixture.h	/^#define LONGS_EQUAL(/;"	d
 MAIN	makefile	/^MAIN=a.out$/;"	m
 MALLOC_DONT_FAIL	unity/extras/memory/src/unity_memory.c	/^#define MALLOC_DONT_FAIL /;"	d	file:
 MAX_ENTRIES	src/regolith.c	/^const int MAX_ENTRIES= 100;$/;"	v
-MAX_HEIGHT	src/regolith.c	/^const int MAX_HEIGHT = 500;$/;"	v
-MAX_LINE	src/regolith.c	/^const int MAX_LINE = 1000;$/;"	v
+MAX_ENTRY	src/regolith.c	/^const int MAX_ENTRY = 2500;$/;"	v
+MAX_LINE	src/regolith.c	/^#define MAX_LINE /;"	d	file:
 MAX_WIDTH	src/regolith.c	/^const int MAX_WIDTH  = 500;$/;"	v
+MAX_height	src/regolith.c	/^const int MAX_height = 500;$/;"	v
 NameFilter	unity/extras/fixture/src/unity_fixture_internals.h	/^    const char* NameFilter;$/;"	m	struct:UNITY_FIXTURE_T
 NumberOfTests	unity/src/unity_internals.h	/^    UNITY_COUNTER_TYPE NumberOfTests;$/;"	m	struct:UNITY_STORAGE_T
 PROGMEM	unity/src/unity.c	/^#define PROGMEM$/;"	d	file:
@@ -59,6 +62,7 @@ RUN_TEST_CASE	unity/extras/fixture/src/unity_fixture.h	/^#define RUN_TEST_CASE(/
 RUN_TEST_GROUP	unity/extras/fixture/src/unity_fixture.h	/^#define RUN_TEST_GROUP(/;"	d
 RepeatCount	unity/extras/fixture/src/unity_fixture_internals.h	/^    unsigned int RepeatCount;$/;"	m	struct:UNITY_FIXTURE_T
 RunAllTests	test/all_tests.c	/^static void RunAllTests(void)$/;"	f	file:
+SAND	src/regolith.c	/^const char SAND = 'o';$/;"	v
 SECOND_PARAM	unity/extras/memory/test/unity_memory_Test.c	/^#define SECOND_PARAM(/;"	d	file:
 SRC	unity/extras/fixture/test/Makefile	/^SRC = ..\/src\/unity_fixture.c \\$/;"	m
 SRC	unity/extras/memory/test/Makefile	/^SRC = ..\/src\/unity_memory.c \\$/;"	m
@@ -71,7 +75,8 @@ TARGET	unity/extras/memory/test/Makefile	/^TARGET = ..\/build\/memory_tests.exe$
 TEST	makefile	/^TEST=test.out$/;"	m
 TEST	test/regolith_tests.c	/^TEST(regolith, read_puzzle) {$/;"	f
 TEST	test/regolith_tests.c	/^TEST(regolith, sand_falling) {$/;"	f
-TEST	test/regolith_tests.c	/^TEST(regolith, scan_path) {$/;"	f
+TEST	test/regolith_tests.c	/^TEST(regolith, solve_part1_puzzle) {$/;"	f
+TEST	test/regolith_tests.c	/^TEST(regolith, solve_part1_sample) {$/;"	f
 TEST	unity/extras/fixture/src/unity_fixture.h	/^#define TEST(/;"	d
 TEST	unity/extras/fixture/test/template_fixture_tests.c	/^TEST(mygroup, test1)$/;"	f
 TEST	unity/extras/fixture/test/template_fixture_tests.c	/^TEST(mygroup, test2)$/;"	f
@@ -1018,16 +1023,19 @@ UnityVerbosity	unity/src/unity.c	/^int UnityVerbosity            = 1;$/;"	v
 VAL_UnityOutputCharSpy_OutputChar	unity/extras/memory/test/unity_memory_Test.c	/^#define VAL_UnityOutputCharSpy_OutputChar /;"	d	file:
 Verbose	unity/extras/fixture/src/unity_fixture_internals.h	/^    int Verbose;$/;"	m	struct:UNITY_FIXTURE_T
 announceTestRun	unity/extras/fixture/src/unity_fixture.c	/^static void announceTestRun(unsigned int runNumber)$/;"	f	file:
+at	src/regolith.c	/^char at(CAVE *cave, int x, int y){$/;"	f
+buffer	src/regolith.c	/^char buffer[MAX_LINE];$/;"	v
 buffer	unity/extras/memory/test/unity_output_Spy.c	/^static char* buffer;$/;"	v	file:
 calloc	unity/extras/memory/src/unity_memory.c	/^#undef calloc$/;"	d	file:
 calloc	unity/extras/memory/src/unity_memory.h	/^#define calloc /;"	d
-cave	test/regolith_tests.c	/^char *cave;$/;"	v
-cave_at	src/regolith.c	/^char cave_at(char *cave, int x, int y){$/;"	f
+cave	src/regolith.h	/^typedef struct cave {$/;"	s
+cave	test/regolith_tests.c	/^CAVE *cave;$/;"	v
+content	src/regolith.h	/^    char *content;$/;"	m	struct:cave
 count	unity/extras/memory/test/unity_output_Spy.c	/^static int count;$/;"	v	file:
 d	unity/src/unity.c	/^    double d;$/;"	m	union:__anon1	file:
 dashRNotLast	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* dashRNotLast[] = {$/;"	v	file:
 data	unity/extras/fixture/test/template_fixture_tests.c	/^static int data = -1;$/;"	v	file:
-destroy_cave	src/regolith.c	/^void destroy_cave(char *cave) {$/;"	f
+destroy_cave	src/regolith.c	/^void destroy_cave(CAVE *cave) {$/;"	f
 end	unity/extras/memory/src/unity_memory.c	/^static const char end[] = "END";$/;"	v	file:
 f	unity/src/unity.c	/^    float f;$/;"	m	union:__anon1	file:
 free	unity/extras/memory/src/unity_memory.c	/^#undef free$/;"	d	file:
@@ -1036,6 +1044,7 @@ group	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* group[
 groupSelected	unity/extras/fixture/src/unity_fixture.c	/^static int groupSelected(const char* group)$/;"	f	file:
 guard_space	unity/extras/memory/src/unity_memory.c	/^    size_t guard_space;$/;"	m	struct:GuardBytes	file:
 heap_index	unity/extras/memory/src/unity_memory.c	/^static size_t heap_index;$/;"	v	file:
+height	src/regolith.h	/^    int height;$/;"	m	struct:cave
 i16	unity/src/unity.c	/^    UNITY_INT16 i16;$/;"	m	union:__anon1	file:
 i32	unity/src/unity.c	/^    UNITY_INT32 i32;$/;"	m	union:__anon1	file:
 i64	unity/src/unity.c	/^    UNITY_INT64 i64;$/;"	m	union:__anon1	file:
@@ -1057,7 +1066,6 @@ malloc_fail_countdown	unity/extras/memory/src/unity_memory.c	/^static int malloc
 multiple	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* multiple[] = {$/;"	v	file:
 mygroup	unity/extras/fixture/test/template_fixture_tests.c	/^TEST_GROUP(mygroup);$/;"	v
 name	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* name[] = {$/;"	v	file:
-new_cave	src/regolith.c	/^char *new_cave(int size) {$/;"	f
 noOptions	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* noOptions[] = {$/;"	v	file:
 noreturn	unity/src/unity_internals.h	/^void UnityFail(const char* message, const UNITY_LINE_TYPE line) UNITY_FUNCTION_ATTR(noreturn);$/;"	v
 noreturn	unity/src/unity_internals.h	/^void UnityIgnore(const char* message, const UNITY_LINE_TYPE line) UNITY_FUNCTION_ATTR(noreturn);$/;"	v
@@ -1070,26 +1078,28 @@ pointer2	unity/extras/fixture/test/unity_fixture_Test.c	/^static int* pointer2 =
 pointer3	unity/extras/fixture/test/unity_fixture_Test.c	/^static int* pointer3 = (int*)3;$/;"	v	file:
 pointer_index	unity/extras/fixture/src/unity_fixture.c	/^static int pointer_index = 0;$/;"	v	file:
 pointer_store	unity/extras/fixture/src/unity_fixture.c	/^static struct PointerPair pointer_store[UNITY_MAX_POINTERS];$/;"	v	typeref:struct:PointerPair	file:
-read_puzzle	src/regolith.c	/^char *read_puzzle(char *filename) {$/;"	f
+print_cave	src/regolith.c	/^void print_cave(CAVE *cave) {$/;"	f
+read_puzzle	src/regolith.c	/^CAVE *read_puzzle(char *filename) {$/;"	f
 realloc	unity/extras/memory/src/unity_memory.c	/^#undef realloc$/;"	d	file:
 realloc	unity/extras/memory/src/unity_memory.h	/^#define realloc /;"	d
 regolith	test/regolith_tests.c	/^TEST_GROUP(regolith);$/;"	v
 release_memory	unity/extras/memory/src/unity_memory.c	/^static void release_memory(void* mem)$/;"	f	file:
 repeat	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* repeat[] = {$/;"	v	file:
 runAllTests	unity/extras/fixture/test/main/AllTests.c	/^static void runAllTests(void)$/;"	f	file:
-sand_fall	src/regolith.c	/^bool sand_fall(char *cave) {$/;"	f
+sand_fall	src/regolith.c	/^bool sand_fall(CAVE *cave, int x, int y) {$/;"	f
 savedGroup	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* savedGroup;$/;"	v	file:
 savedName	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* savedName;$/;"	v	file:
 savedRepeat	unity/extras/fixture/test/unity_fixture_Test.c	/^static unsigned int savedRepeat;$/;"	v	file:
 savedVerbose	unity/extras/fixture/test/unity_fixture_Test.c	/^static int savedVerbose;$/;"	v	file:
-scan_path	src/regolith.c	/^void scan_path(char *cave, char *line) {$/;"	f
-scan_segment	src/regolith.c	/^void scan_segment(char *cave, int x0, int y0, int x1, int y1) {$/;"	f
+scan_segment	src/regolith.c	/^void scan_segment(CAVE *cave, int x0, int y0, int x1, int y1) {$/;"	f
 selected	unity/extras/fixture/src/unity_fixture.c	/^static int selected(const char* filter, const char* name)$/;"	f	file:
+set	src/regolith.c	/^void set(CAVE *cave, int x, int y, char c) {$/;"	f
 setUp	unity/extras/fixture/src/unity_fixture.c	/^void setUp(void)    { \/*does nothing*\/ }$/;"	f
 setUp	unity/extras/memory/test/unity_memory_Test.c	/^void setUp(void) $/;"	f
 size	unity/extras/memory/src/unity_memory.c	/^    size_t size;$/;"	m	struct:GuardBytes	file:
 size	unity/extras/memory/test/unity_output_Spy.c	/^static int size;$/;"	v	file:
 spy_enable	unity/extras/memory/test/unity_output_Spy.c	/^static int spy_enable;$/;"	v	file:
+stopped_sand	src/regolith.c	/^int stopped_sand(CAVE *cave) {$/;"	f
 tearDown	unity/extras/fixture/src/unity_fixture.c	/^void tearDown(void) { \/*does nothing*\/ }$/;"	f
 tearDown	unity/extras/memory/test/unity_memory_Test.c	/^void tearDown(void) $/;"	f
 testSelected	unity/extras/fixture/src/unity_fixture.c	/^static int testSelected(const char* test)$/;"	f	file:
@@ -1119,3 +1129,8 @@ unity_size_round_up	unity/extras/memory/src/unity_memory.c	/^static size_t unity
 unityfunction	unity/extras/fixture/src/unity_fixture_internals.h	/^typedef void unityfunction(void);$/;"	t
 unknownCommand	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* unknownCommand[] = {$/;"	v	file:
 verbose	unity/extras/fixture/test/unity_fixture_Test.c	/^static const char* verbose[] = {$/;"	v	file:
+width	src/regolith.h	/^    int width;$/;"	m	struct:cave
+xmax	src/regolith.h	/^    int xmax;$/;"	m	struct:cave
+xmin	src/regolith.h	/^    int xmin;$/;"	m	struct:cave
+ymax	src/regolith.h	/^    int ymax;$/;"	m	struct:cave
+ymin	src/regolith.h	/^    int ymin;$/;"	m	struct:cave

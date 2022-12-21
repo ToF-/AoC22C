@@ -2,7 +2,11 @@
 
 typedef struct cave {
     int width;
-    int heigth;
+    int height;
+    int xmin;
+    int xmax;
+    int ymin;
+    int ymax;
     char *content;
 } CAVE;
 
@@ -10,4 +14,6 @@ char at(CAVE *cave, int x, int y);
 void set(CAVE *cave, int x, int y, char c);
 CAVE *read_puzzle(char *filename);
 void destroy_cave(CAVE *cave);
-bool sand_fall(CAVE *cave);
+bool sand_fall(CAVE *cave, int x, int y);
+void print_cave(CAVE *cave);
+int stopped_sand(CAVE *cave);
