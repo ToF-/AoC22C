@@ -16,31 +16,38 @@ const char ROCK = '#';
 const char SAND = 'o';
 
 void destroy_cave(CAVE *cave) {
-    free(cave->content);
-    free(cave);
+   free(cave->content);
+   cave->content = NULL;
+   free(cave);
+   cave = NULL;
 }
 char at(CAVE *cave, int x, int y){
     return cave->content[(y*cave->width)+x];
 }
 
 void set(CAVE *cave, int x, int y, char c) {
-    assert(x >= 0);
-    assert(y >= 0);
-    assert(y*cave->width+x < cave->width*cave->height);
+    printf("set x=%d y=%d width=%d height=%d offset=%d\n", x,y,cave->width,cave->height,y*cave->width+x);
+    printf("sizeof(char):%ld\n",sizeof(char));
+    printf("cave->content:%p\n", (void *)cave->content);
+    printf("cave->content:%p\n", (void *)&(cave->content[y*cave->width+x]));
+    assert(x >= 0 && x < cave->width);
+    assert(y >= 0 && y < cave->height);
+    assert(cave->width > 0);
+    assert(cave->height > 0);
+    assert((y*cave->width+x) < (cave->width*cave->height));
     cave->content[y*cave->width+x] = c;
     if(c == ROCK) {
         cave->xmin = x < cave->xmin ? x : cave->xmin;
         cave->xmax = x > cave->xmax ? x : cave->xmax;
         cave->ymin = y < cave->ymin ? y : cave->ymin;
         cave->ymax = y > cave->ymax ? y : cave->ymax;
-
     }
 }
 void scan_segment(CAVE *cave, int x0, int y0, int x1, int y1) {
-    assert(x0 >= 0);
-    assert(y0 >= 0);
-    assert(x1 >= 0);
-    assert(y1 >= 0);
+    assert(x0 >= 0 && x0 < cave->width);
+    assert(y0 >= 0 && y0 < cave->height);
+    assert(x1 >= 0 && x1 < cave->width);
+    assert(y1 >= 0 && y1 < cave->height);
     if(x0 == x1) {
         if(y1 < y0) {
             int temp = y1;
@@ -62,6 +69,7 @@ void scan_segment(CAVE *cave, int x0, int y0, int x1, int y1) {
 }
 
 const int MAX_ENTRY = 10000;
+const int LINE_MAX = 1000;
 
 CAVE *read_puzzle(char *filename) {
     printf("%s\n", filename);
@@ -97,25 +105,32 @@ CAVE *read_puzzle(char *filename) {
     }
     fclose(puzzle_file);
     CAVE *cave = (CAVE *)malloc(sizeof(cave));
+    printf("size of *cave: %ld\n", sizeof(*cave));
     cave->height = height*2;
     cave->width = width*2;
-    cave->xmin = INT_MAX;
-    cave->ymin = INT_MAX;
-    cave->xmax = INT_MIN;
-    cave->ymax = INT_MIN;
-    cave->content = (char *)malloc(sizeof(char)*cave->width*cave->height);
-    memset(cave->content, AIR, cave->width*cave->height);
-    assert(cave->content);
-    for(int y=0; y<cave->height; y++)
-        for(int x=0; x<cave->width; x++) {
-            set(cave, x, y, AIR);
-        }
+    int total_size = cave->width * cave->height;
+    assert(total_size > 0);
+    cave->content = (char *)malloc(sizeof(char)*total_size);
+    printf("cave->content:%p\n", (void *)cave->content);
+    memset(cave->content, AIR, sizeof(char)*total_size);
+    printf("cave->content:%p\n", (void *)cave->content);
+    cave->xmin = 10000;
+    cave->ymin = 10000;
+    cave->xmax = -10000;
+    cave->ymax = -10000;
+    assert(cave->content !=NULL);
+ //   for(int y=0; y<cave->height; y++)
+ //       for(int x=0; x<cave->width; x++) {
+ //           set(cave, x, y, AIR);
+ //       }
     for(int i = 0; i < count-2; i+=2) {
         if(entry[i] != -1 && entry[i+2] != -1)
             scan_segment(cave, entry[i], entry[i+1], entry[i+2], entry[i+3]);
         else
             i+=2;
     }
+    printf("%p\n", (void *)cave);
+    printf("%p\n", (void *)cave->content);
     return cave;
 }
 
@@ -148,5 +163,6 @@ int stopped_sand(CAVE *cave) {
     int count = 0;
     while(sand_fall(cave, 500, 0))
         count++;
+
     return count;
 }

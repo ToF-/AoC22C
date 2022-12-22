@@ -1,3 +1,7 @@
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 typedef struct cave {
@@ -7,6 +11,7 @@ typedef struct cave {
     int xmax;
     int ymin;
     int ymax;
+    char space[1000];
     char *content;
 } CAVE;
 
