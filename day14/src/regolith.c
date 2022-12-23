@@ -16,10 +16,12 @@ const char ROCK = '#';
 const char SAND = 'o';
 
 void destroy_cave(CAVE *cave) {
-   free(cave->content);
-   cave->content = NULL;
-   free(cave);
-   cave = NULL;
+    printf("destroy_cave\n");
+    print_debug_cave(cave);
+//    free(cave->content);
+    cave->content = NULL;
+    free(cave);
+    cave = NULL;
 }
 char at(CAVE *cave, int x, int y){
     return cave->content[(y*cave->width)+x];
@@ -65,7 +67,7 @@ void scan_segment(CAVE *cave, int x0, int y0, int x1, int y1) {
 }
 
 const int MAX_ENTRY = 10000;
-// const int LINE_MAX = 1000;
+const int LINE_SIZE = 1000;
 
 CAVE *read_puzzle(char *filename) {
     printf("scanning %s\n", filename);
@@ -74,11 +76,11 @@ CAVE *read_puzzle(char *filename) {
     int width = 0;
     int height = 0;
     count = 0;
-    char buffer[LINE_MAX];
-    char line[LINE_MAX];
+    char buffer[LINE_SIZE];
+    char line[LINE_SIZE];
     FILE *puzzle_file = fopen(filename, "r");
     int lineno=0;
-    while(fgets(line, LINE_MAX, puzzle_file)) {
+    while(fgets(line, LINE_SIZE, puzzle_file)) {
         int l = strcspn(line, "\n");
         line[l] = '\0';
         strcpy(buffer, line);

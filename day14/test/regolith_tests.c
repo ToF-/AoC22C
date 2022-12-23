@@ -18,6 +18,7 @@ TEST_TEAR_DOWN(regolith) {
     UnityMalloc_EndTest();
 }
 TEST(regolith, read_puzzle) {
+    printf("TEST: read_puzzle\n");
     cave = read_puzzle("sample.txt");
     TEST_ASSERT_EQUAL_INT(1006, cave->width);
     TEST_ASSERT_EQUAL_INT(18,   cave->height);
@@ -30,9 +31,11 @@ TEST(regolith, read_puzzle) {
     TEST_ASSERT_EQUAL_CHAR('#', at(cave, 503,4));
     TEST_ASSERT_EQUAL_CHAR('#', at(cave, 502,4));
     TEST_ASSERT_EQUAL_CHAR('#', at(cave, 494,9));
+    print_debug_cave(cave);
     print_cave(cave);
 }
 TEST(regolith, sand_falling) {
+    printf("TEST: sand_falling\n");
     cave = read_puzzle("sample.txt");
     TEST_ASSERT_TRUE(sand_fall(cave, 500, 0));
     TEST_ASSERT_EQUAL_CHAR('o', at(cave, 500,8));
@@ -47,10 +50,12 @@ TEST(regolith, sand_falling) {
     TEST_ASSERT_FALSE(sand_fall(cave, 500, 0));
 }
 TEST(regolith, solve_part1_sample) {
+    printf("TEST: solve_part1_sample\n");
     cave = read_puzzle("sample.txt");
     TEST_ASSERT_EQUAL_INT(24, stopped_sand(cave));
 }
 TEST(regolith, solve_part1_puzzle) {
+    printf("TEST: solve_part1_puzzle\n");
     cave=read_puzzle("puzzle.txt");
     print_cave(cave);
     TEST_ASSERT_EQUAL_INT(817, stopped_sand(cave));
