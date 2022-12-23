@@ -104,7 +104,7 @@ CAVE *read_puzzle(char *filename) {
         entry[count++] = -1;
     }
     fclose(puzzle_file);
-    CAVE *cave = (CAVE *)malloc(sizeof(cave));
+    CAVE *cave = (CAVE *)malloc(sizeof(CAVE));
     cave->height = height*2;
     cave->width = width*2;
     int total_size = cave->width * cave->height;
