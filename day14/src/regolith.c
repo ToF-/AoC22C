@@ -26,10 +26,6 @@ char at(CAVE *cave, int x, int y){
 }
 
 void set(CAVE *cave, int x, int y, char c) {
-    printf("set x=%d y=%d width=%d height=%d offset=%d\n", x,y,cave->width,cave->height,y*cave->width+x);
-    printf("sizeof(char):%ld\n",sizeof(char));
-    printf("cave->content:%p\n", (void *)cave->content);
-    printf("cave->content:%p\n", (void *)&(cave->content[y*cave->width+x]));
     assert(x >= 0 && x < cave->width);
     assert(y >= 0 && y < cave->height);
     assert(cave->width > 0);
@@ -69,10 +65,10 @@ void scan_segment(CAVE *cave, int x0, int y0, int x1, int y1) {
 }
 
 const int MAX_ENTRY = 10000;
-const int LINE_MAX = 1000;
+// const int LINE_MAX = 1000;
 
 CAVE *read_puzzle(char *filename) {
-    printf("%s\n", filename);
+    printf("scanning %s\n", filename);
     int entry[MAX_ENTRY];
     int count = 0;
     int width = 0;
@@ -105,33 +101,35 @@ CAVE *read_puzzle(char *filename) {
     }
     fclose(puzzle_file);
     CAVE *cave = (CAVE *)malloc(sizeof(cave));
-    printf("size of *cave: %ld\n", sizeof(*cave));
     cave->height = height*2;
     cave->width = width*2;
     int total_size = cave->width * cave->height;
     assert(total_size > 0);
     cave->content = (char *)malloc(sizeof(char)*total_size);
-    printf("cave->content:%p\n", (void *)cave->content);
     memset(cave->content, AIR, sizeof(char)*total_size);
-    printf("cave->content:%p\n", (void *)cave->content);
     cave->xmin = 10000;
     cave->ymin = 10000;
     cave->xmax = -10000;
     cave->ymax = -10000;
     assert(cave->content !=NULL);
- //   for(int y=0; y<cave->height; y++)
- //       for(int x=0; x<cave->width; x++) {
- //           set(cave, x, y, AIR);
- //       }
     for(int i = 0; i < count-2; i+=2) {
         if(entry[i] != -1 && entry[i+2] != -1)
             scan_segment(cave, entry[i], entry[i+1], entry[i+2], entry[i+3]);
         else
             i+=2;
     }
-    printf("%p\n", (void *)cave);
-    printf("%p\n", (void *)cave->content);
+    print_debug_cave(cave);
     return cave;
+}
+void print_debug_cave(CAVE *cave) {
+    printf("@cave:\t\t%p\n", (void *)cave);
+    printf("@cave->width:\t%p\t%d\n", (void *)&cave->width, cave->width);
+    printf("@cave->height:\t%p\t%d\n", (void *)&cave->height, cave->height);
+    printf("@cave->xmin:\t%p\t%d\n", (void *)&cave->xmin, cave->xmin);
+    printf("@cave->xmax:\t%p\t%d\n", (void *)&cave->xmax, cave->xmax);
+    printf("@cave->ymin:\t%p\t%d\n", (void *)&cave->ymin, cave->ymin);
+    printf("@cave->ymax:\t%p\t%d\n", (void *)&cave->ymax, cave->ymax);
+    printf("@cave->content:\t%p\n", (void *)cave->content);
 }
 
 bool sand_fall(CAVE *cave, int x, int y) {
@@ -151,7 +149,6 @@ bool sand_fall(CAVE *cave, int x, int y) {
 }
 
 void print_cave(CAVE *cave) {
-    printf("(%d %d %d %d)\n", cave->xmin, cave->ymin, cave->xmax, cave->ymax);
     for(int y = cave->ymin; y <= cave->ymax; y++) {
         for(int x = cave->xmin; x <= cave->xmax; x++) 
             printf("%c", at(cave, x, y));

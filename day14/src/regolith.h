@@ -11,7 +11,6 @@ typedef struct cave {
     int xmax;
     int ymin;
     int ymax;
-    char space[1000];
     char *content;
 } CAVE;
 
@@ -22,3 +21,4 @@ void destroy_cave(CAVE *cave);
 bool sand_fall(CAVE *cave, int x, int y);
 void print_cave(CAVE *cave);
 int stopped_sand(CAVE *cave);
+void print_debug_cave(CAVE *cave);
