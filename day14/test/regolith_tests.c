@@ -61,3 +61,14 @@ TEST(regolith, solve_part1_puzzle) {
     TEST_ASSERT_EQUAL_INT(817, stopped_sand(cave));
     print_cave(cave);
 }
+TEST(regolith, solve_part2_sample) {
+    printf("TEST: solve_part2_sample\n");
+    cave=read_puzzle("sample.txt");
+    TEST_ASSERT_EQUAL_INT(93, stopped_sand_with_floor(cave));
+}
+TEST(regolith, solve_part2_puzzle) {
+    printf("TEST: solve_part2_puzzle\n");
+    cave=read_puzzle("puzzle.txt");
+    TEST_ASSERT_EQUAL_INT(23416, stopped_sand_with_floor(cave));
+    print_cave(cave);
+}

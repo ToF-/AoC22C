@@ -24,6 +24,8 @@ void destroy_cave(CAVE *cave) {
     cave = NULL;
 }
 char at(CAVE *cave, int x, int y){
+    if(cave->has_floor && y >= cave->ymax+2)
+        return ROCK;
     return cave->content[(y*cave->width)+x];
 }
 
@@ -113,6 +115,7 @@ CAVE *read_puzzle(char *filename) {
     cave->ymin = 10000;
     cave->xmax = -10000;
     cave->ymax = -10000;
+    cave->has_floor = false;
     assert(cave->content !=NULL);
     for(int i = 0; i < count-2; i+=2) {
         if(entry[i] != -1 && entry[i+2] != -1)
@@ -134,8 +137,16 @@ void print_debug_cave(CAVE *cave) {
     printf("@cave->content:\t%p\n", (void *)cave->content);
 }
 
+bool free_to_fall(CAVE *cave, int x, int y) {
+    if(cave->has_floor)
+        return true;
+    return x >= cave->xmin && x < cave->xmax && y < cave->ymax;
+}
+
 bool sand_fall(CAVE *cave, int x, int y) {
-    while(x >= cave->xmin && x < cave->xmax && y < cave->ymax) {
+    if(at(cave, x, y) != AIR)
+        return false;
+    while(free_to_fall(cave, x, y)) {
         if(at(cave, x, y+1) == AIR) {
             y++;
         } else {
@@ -163,5 +174,13 @@ int stopped_sand(CAVE *cave) {
     while(sand_fall(cave, 500, 0))
         count++;
 
+    return count;
+}
+
+int stopped_sand_with_floor(CAVE *cave) {
+    cave->has_floor = true;
+    int count = 0;
+    while(sand_fall(cave, 500, 0))
+        count++;
     return count;
 }
