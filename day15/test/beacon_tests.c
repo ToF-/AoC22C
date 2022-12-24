@@ -7,6 +7,8 @@
 TEST_GROUP(beacon);
 
 
+SENSOR sensor;
+
 TEST_SETUP(beacon) {
     UnityMalloc_StartTest(); // see unity/extras/memory/readme.md
 }
@@ -44,19 +46,43 @@ TEST_TEAR_DOWN(beacon) {
 
 */
 TEST(beacon, excluded) {
-    int sx=8; int sy=7; int bx=2; int by=10;
-    TEST_ASSERT_TRUE(excluded(sx,sy,bx,by,2,10));
-    TEST_ASSERT_FALSE(excluded(sx,sy,bx,by,1,11));
-    TEST_ASSERT_TRUE(excluded(sx,sy,bx,by,1,9));
-    TEST_ASSERT_TRUE(excluded(sx,sy,bx,by,16,8));
-    TEST_ASSERT_TRUE(excluded(sx,sy,bx,by,8,7));
+    sensor  = (SENSOR) { .coord = (COORD){ .x = 8, .y = 7}, .beacon = (COORD) { .x = 2, .y = 10}};
+    TEST_ASSERT_FALSE(excluded(sensor,2,10));
+    TEST_ASSERT_FALSE(excluded(sensor,1,11));
+    TEST_ASSERT_TRUE(excluded(sensor,1,9));
+    TEST_ASSERT_TRUE(excluded(sensor,16,8));
+    TEST_ASSERT_TRUE(excluded(sensor,8,7));
 }
 
 TEST(beacon, get_sensor) {
-    int sx, sy, bx, by;
-    get_sensor("Sensor at x=2, y=18: closest beacon is at x=-2, y=15", &sx, &sy, &bx, &by);
-    TEST_ASSERT_EQUAL_INT(2,  sx);
-    TEST_ASSERT_EQUAL_INT(18, sy);
-    TEST_ASSERT_EQUAL_INT(-2, bx);
-    TEST_ASSERT_EQUAL_INT(15, by);
+    sensor = get_sensor("Sensor at x=2, y=18: closest beacon is at x=-2, y=15");
+    TEST_ASSERT_EQUAL_INT(2,  sensor.coord.x);
+    TEST_ASSERT_EQUAL_INT(18, sensor.coord.y);
+    TEST_ASSERT_EQUAL_INT(-2, sensor.beacon.x);
+    TEST_ASSERT_EQUAL_INT(15, sensor.beacon.y);
+}
+
+TEST(beacon, get_puzzle) {
+    SENSOR sensors[14];
+    TEST_ASSERT_EQUAL_INT(14, get_puzzle(sensors, "sample.txt"));
+    TEST_ASSERT_EQUAL_INT(2,  sensors[0].coord.x);
+    TEST_ASSERT_EQUAL_INT(18, sensors[0].coord.y);
+    TEST_ASSERT_EQUAL_INT(-2, sensors[0].beacon.x);
+    TEST_ASSERT_EQUAL_INT(15, sensors[0].beacon.y);
+    TEST_ASSERT_EQUAL_INT(20, sensors[13].coord.x);
+    TEST_ASSERT_EQUAL_INT(1,  sensors[13].coord.y);
+    TEST_ASSERT_EQUAL_INT(15, sensors[13].beacon.x);
+    TEST_ASSERT_EQUAL_INT(3,  sensors[13].beacon.y);
+}
+
+TEST(beacon, excluded_positions) {
+    SENSOR sensors[14];
+    int count = get_puzzle(sensors, "sample.txt");
+    TEST_ASSERT_EQUAL_INT(26,excluded_positions(sensors, count, 10));
+}
+TEST(beacon, solve_puzzle_part1) {
+    SENSOR sensors[28];
+    int count = get_puzzle(sensors, "puzzle.txt");
+    TEST_ASSERT_EQUAL_INT(28, count);
+    TEST_ASSERT_EQUAL_INT(26,excluded_positions(sensors, count, 2000000));
 }
