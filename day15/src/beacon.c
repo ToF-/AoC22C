@@ -22,30 +22,12 @@ bool excluded(SENSOR sensor, int x, int y) {
         return false;
     return md(sensor.coord, (COORD) { .x = x, .y = y }) <= distance(sensor);
 }
-
-int scan_sensors(SENSOR *sensors, int count, int selected, int xmin, int ymin, int xmax, int ymax) {
-    int result = 0;
-    for(int y=ymin; y<=ymax; y++) {
-        printf("%d\n",y);
-        for(int x=xmin; x<=xmax; x++) {
-            char c = '.';
-            for(int i=0; i<count; i++) {
-                SENSOR s = sensors[i];
-                if(c != '#') { 
-                    if(x == s.coord.x && y == s.coord.y)
-                        c = 'S';
-                    else if(x == s.beacon.x && y == s.beacon.y)
-                        c = 'B';
-                    else if(excluded(s, x, y)) {
-                        c = '#';
-                        if(y == selected)
-                            result++;
-                    }
-                }
-            }
-        }
+bool excluded_all(SENSOR *sensors, int count, int x, int y) {
+    for(int i=0; i<count; i++) {
+        if(excluded(sensors[i], x, y))
+            return true;
     }
-    return result;
+    return false;
 }
 
 int min(int a, int b) {
@@ -70,7 +52,10 @@ int excluded_positions(SENSOR *sensors, int count, int row) {
         ymax = max(ymax, s.coord.y + d);
     }
     printf("%d,%d %d,%d\n", xmin, ymin, xmax, ymax);
-    return scan_sensors(sensors, count, row, xmin, ymin, xmax, ymax);
+    int result = 0;
+    for(int x = xmin; x <= xmax; x++) 
+        result += excluded_all(sensors, count, x, row);
+    return result;
 }
 
 SENSOR get_sensor(char *line) {

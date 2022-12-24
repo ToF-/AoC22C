@@ -84,5 +84,5 @@ TEST(beacon, solve_puzzle_part1) {
     SENSOR sensors[28];
     int count = get_puzzle(sensors, "puzzle.txt");
     TEST_ASSERT_EQUAL_INT(28, count);
-    TEST_ASSERT_EQUAL_INT(26,excluded_positions(sensors, count, 2000000));
+    TEST_ASSERT_EQUAL_INT(5832528,excluded_positions(sensors, count, 2000000));
 }
