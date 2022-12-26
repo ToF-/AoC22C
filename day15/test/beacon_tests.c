@@ -94,7 +94,17 @@ TEST(beacon, append_two_coordlists) {
     destroy_coord_list(l);
 }
 
+bool include(COORD_LIST *list, COORD coord) {
+    while(list) {
+        if(equal_coords(coord, list->coord))
+            return true;
+        list = list->next;
+    }
+    return false;
+}
 void print_sensors(SENSOR **sensors, int count) {
+    COORD_LIST *is = interesting_coords(sensors, count);
+
     printf("\n");
     for(int row = -15; row < 35; row++) {
         for(int col = -15; col < 35; col++) {
@@ -106,6 +116,8 @@ void print_sensors(SENSOR **sensors, int count) {
                     c = 'S';
                 else if(equal_coords(pos, s->beacon))
                     c = 'B';
+                else if(include(is, pos))
+                    c = '*';
                 else {
                     int r = manhattan_distance(s->location, s->beacon);
                     int p = manhattan_distance(pos, s->location);

@@ -111,19 +111,32 @@ COORD_LIST *all_intersections(SENSOR ** sensors, int count) {
     return l;
 }
 
-bool interesting(COORD pos, SENSOR **sensors, int count) {
+bool can_be_excluded(COORD pos, SENSOR **sensors, int count) {
     for(int i = 0; i < count; i++) {
         SENSOR *s = sensors[i];
         if(equal_coords(pos, s->location))
-            return false;
+            return true;
         if(equal_coords(pos, s->beacon))
-            return false;
+            return true;
         int r = manhattan_distance(s->location, s->beacon);
         int p = manhattan_distance(pos, s->location);
         if(p <= r)
-            return false;
+            return true;
     }
-    return true;
+    return false;
+}
+bool interesting(COORD pos, SENSOR **sensors, int count) {
+    COORD adjacent[4] = {
+        (COORD) { .x = pos.x, .y = pos.y+1 },
+        (COORD) { .x = pos.x, .y = pos.y-1 },
+        (COORD) { .x = pos.x+1, .y = pos.y },
+        (COORD) { .x = pos.x-1, .y = pos.y }
+    };
+    int adjs = 0;
+    for(int i = 0; i < 4; i++)
+        if(can_be_excluded(adjacent[i], sensors, count))
+            adjs++;
+    return ! can_be_excluded(pos, sensors, count) && adjs == 4;
 }
 COORD_LIST *interesting_coords(SENSOR **sensors, int count) {
     COORD_LIST *l = all_intersections(sensors, count);
