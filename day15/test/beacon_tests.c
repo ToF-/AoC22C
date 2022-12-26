@@ -6,29 +6,61 @@
 
 TEST_GROUP(beacon);
 
-SENSOR *sensors[14];
-int count = 14;
+SENSOR *sample[14];
+int sample_count = 14;
+SENSOR *puzzle[28];
+int puzzle_count = 28;
+
 
 TEST_SETUP(beacon) {
-    sensors[ 0]=sensor(coord(2, 18),coord(-2, 15));
-    sensors[ 1]=sensor(coord(9, 16),coord(10, 16));
-    sensors[ 2]=sensor(coord(13, 2),coord(15, 3));
-    sensors[ 3]=sensor(coord(12, 14),coord(10, 16));
-    sensors[ 4]=sensor(coord(10, 20),coord(10, 16));
-    sensors[ 5]=sensor(coord(14, 17),coord(10, 16));
-    sensors[ 6]=sensor(coord(8, 7),coord(2, 10));
-    sensors[ 7]=sensor(coord(2, 0),coord(2, 10));
-    sensors[ 8]=sensor(coord(0, 11),coord(2, 10));
-    sensors[ 9]=sensor(coord(20, 14),coord(25, 17));
-    sensors[10]=sensor(coord(17, 20),coord(21, 22));
-    sensors[11]=sensor(coord(16, 7),coord(15, 3));
-    sensors[12]=sensor(coord(14, 3),coord(15, 3));
-    sensors[13]=sensor(coord(20, 1),coord(15, 3));
+    sample[ 0]=sensor(coord(2, 18),coord(-2, 15));
+    sample[ 1]=sensor(coord(9, 16),coord(10, 16));
+    sample[ 2]=sensor(coord(13, 2),coord(15, 3));
+    sample[ 3]=sensor(coord(12, 14),coord(10, 16));
+    sample[ 4]=sensor(coord(10, 20),coord(10, 16));
+    sample[ 5]=sensor(coord(14, 17),coord(10, 16));
+    sample[ 6]=sensor(coord(8, 7),coord(2, 10));
+    sample[ 7]=sensor(coord(2, 0),coord(2, 10));
+    sample[ 8]=sensor(coord(0, 11),coord(2, 10));
+    sample[ 9]=sensor(coord(20, 14),coord(25, 17));
+    sample[10]=sensor(coord(17, 20),coord(21, 22));
+    sample[11]=sensor(coord(16, 7),coord(15, 3));
+    sample[12]=sensor(coord(14, 3),coord(15, 3));
+    sample[13]=sensor(coord(20, 1),coord(15, 3));
+    
+    puzzle[ 0]=sensor(coord(193758,2220950),coord(652350,2000000));
+    puzzle[ 1]=sensor(coord(3395706,3633894),coord(3404471,3632467));
+    puzzle[ 2]=sensor(coord(3896022,3773818),coord(3404471,3632467));
+    puzzle[ 3]=sensor(coord(1442554,1608100),coord(652350,2000000));
+    puzzle[ 4]=sensor(coord(803094,813675),coord(571163,397470));
+    puzzle[ 5]=sensor(coord(3491072,3408908),coord(3404471,3632467));
+    puzzle[ 6]=sensor(coord(1405010,486446),coord(571163,397470));
+    puzzle[ 7]=sensor(coord(3369963,3641076),coord(3404471,3632467));
+    puzzle[ 8]=sensor(coord(3778742,2914974),coord(4229371,3237483));
+    puzzle[ 9]=sensor(coord(1024246,3626229),coord(2645627,3363491));
+    puzzle[10]=sensor(coord(3937091,2143160),coord(4229371,3237483));
+    puzzle[11]=sensor(coord(2546325,2012887),coord(2645627,3363491));
+    puzzle[12]=sensor(coord(3505386,3962087),coord(3404471,3632467));
+    puzzle[13]=sensor(coord(819467,239010),coord(571163,397470));
+    puzzle[14]=sensor(coord(2650614,595151),coord(3367919,-1258));
+    puzzle[15]=sensor(coord(3502942,6438),coord(3367919,-1258));
+    puzzle[16]=sensor(coord(3924022,634379),coord(3367919,-1258));
+    puzzle[17]=sensor(coord(2935977,2838245),coord(2645627,3363491));
+    puzzle[18]=sensor(coord(1897626,7510),coord(3367919,-1258));
+    puzzle[19]=sensor(coord(151527,640680),coord(571163,397470));
+    puzzle[20]=sensor(coord(433246,1337298),coord(652350,2000000));
+    puzzle[21]=sensor(coord(2852855,3976978),coord(3282750,3686146));
+    puzzle[22]=sensor(coord(3328398,3645875),coord(3282750,3686146));
+    puzzle[23]=sensor(coord(3138934,3439134),coord(3282750,3686146));
+    puzzle[24]=sensor(coord(178,2765639),coord(652350,2000000));
+    puzzle[25]=sensor(coord(3386231,3635056),coord(3404471,3632467));
+    puzzle[26]=sensor(coord(3328074,1273456),coord(3367919,-1258));
+    puzzle[27]=sensor(coord(268657,162438),coord(571163,397470));
     UnityMalloc_StartTest(); // see unity/extras/memory/readme.md
 }
 TEST_TEAR_DOWN(beacon) {
-    for(int i=0; i<count; i++)
-        destroy_sensor(sensors[i]);
+    for(int i=0; i<sample_count; i++)
+        destroy_sensor(sample[i]);
 
     UnityMalloc_EndTest();
 }
@@ -102,16 +134,16 @@ bool include(COORD_LIST *list, COORD coord) {
     }
     return false;
 }
-void print_sensors(SENSOR **sensors, int count) {
-    COORD_LIST *is = interesting_coords(sensors, count);
+void print_sample(SENSOR **sample, int count) {
+    COORD_LIST *is = interesting_coords(sample, count);
     COORD cmin, cmax;
-    limits(sensors, count, &cmin, &cmax);
+    limits(sample, count, &cmin, &cmax);
     printf("\n");
     for(int row = cmin.y; row < cmax.y; row++) {
         for(int col = cmin.x; col < cmax.x; col++) {
             char c = '.';
             for(int i=0; i < count; i++) {
-                SENSOR *s = sensors[i];
+                SENSOR *s = sample[i];
                 COORD pos = coord(col, row);
                 if(equal_coords(pos, s->location))
                     c = 'S';
@@ -133,8 +165,8 @@ void print_sensors(SENSOR **sensors, int count) {
 
 }
 TEST(beacon, intersections_between_all_sensors) {
-    print_sensors(sensors, 14);
-    COORD_LIST *l = all_intersections(sensors, count);
+    print_sample(sample, 14);
+    COORD_LIST *l = all_intersections(sample, sample_count);
     COORD_LIST *c = l;
     printf("intersections:\n");
     while(c) {
@@ -145,7 +177,7 @@ TEST(beacon, intersections_between_all_sensors) {
     destroy_coord_list(l);
 }
 TEST(beacon, interesting_intersections) {
-    COORD_LIST *l = interesting_coords(sensors, count);
+    COORD_LIST *l = interesting_coords(sample, sample_count);
     COORD_LIST *c = l;
     printf("interesting:\n");
     while(c) {
@@ -157,9 +189,12 @@ TEST(beacon, interesting_intersections) {
 }
 TEST(beacon, find_limits) {
     COORD cmin, cmax;
-    limits(sensors, count, &cmin, &cmax);
+    limits(sample, sample_count, &cmin, &cmax);
+    printf("(%d,%d) (%d,%d)\n", cmin.x, cmin.y, cmax.x, cmax.y);
+    limits(puzzle, puzzle_count, &cmin, &cmax);
     printf("(%d,%d) (%d,%d)\n", cmin.x, cmin.y, cmax.x, cmax.y);
 }
 TEST(beacon, solution_1) {
-    TEST_ASSERT_EQUAL_INT(26, excluded_in_row(sensors, count, 10));
+    TEST_ASSERT_EQUAL_INT(26, excluded_in_row(sample, sample_count, 10));
+    TEST_ASSERT_EQUAL_INT(5832528, excluded_in_row(puzzle, puzzle_count, 2000000));
 }
