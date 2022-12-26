@@ -159,3 +159,40 @@ COORD_LIST *interesting_coords(SENSOR **sensors, int count) {
     }
     return i;
 }
+
+void limits(SENSOR **sensors, int count, COORD *cmin, COORD *cmax) {
+    int xmin = INT_MAX;
+    int ymin = INT_MAX;
+    int xmax = INT_MIN;
+    int ymax = INT_MIN;
+    for(int i=0; i<count; i++) {
+        SENSOR *s = sensors[i];
+        int x = s->location.x;
+        int y = s->location.y;
+        int r = manhattan_distance(s->location, s->beacon);
+        if(x-r < xmin)
+            xmin = x-r;
+        if(x+r > xmax)
+            xmax = x+r;
+        if(y-r < ymin)
+            ymin = y-r;
+        if(y+r > ymax)
+            ymax = y+r;
+    }
+    cmin->x = xmin;
+    cmin->y = ymin;
+    cmax->x = xmax;
+    cmax->y = ymax;
+}
+
+int excluded_in_row(SENSOR **sensors, int count, int row) {
+    COORD cmin, cmax;
+    limits(sensors, count, &cmin, &cmax);
+    int excl = 0;
+    for(int col = cmin.x; col < cmax.x; col++) {
+        COORD pos = coord(col, row);
+        if(can_be_excluded(pos, sensors, count))
+            excl++;
+    }
+    return excl;
+}

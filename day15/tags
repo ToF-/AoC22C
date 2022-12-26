@@ -18,9 +18,12 @@ SRC_FILES	makefile	/^SRC_FILES=$(UNITY_ROOT)\/src\/unity.c $(UNITY_ROOT)\/extras
 TARGET	makefile	/^TARGET=test.out a.out$/;"	m
 TEST	makefile	/^TEST=test.out$/;"	m
 TEST	test/beacon_tests.c	/^TEST(beacon, append_two_coordlists) {$/;"	f
+TEST	test/beacon_tests.c	/^TEST(beacon, find_limits) {$/;"	f
+TEST	test/beacon_tests.c	/^TEST(beacon, interesting_intersections) {$/;"	f
 TEST	test/beacon_tests.c	/^TEST(beacon, intersections_between_all_sensors) {$/;"	f
 TEST	test/beacon_tests.c	/^TEST(beacon, intersections_between_two_sensors) {$/;"	f
 TEST	test/beacon_tests.c	/^TEST(beacon, sensor_characteristics) {$/;"	f
+TEST	test/beacon_tests.c	/^TEST(beacon, solution_1) {$/;"	f
 TEST_GROUP_RUNNER	test/test_runner.c	/^TEST_GROUP_RUNNER(beacon) {$/;"	f
 TEST_SETUP	test/beacon_tests.c	/^TEST_SETUP(beacon) {$/;"	f
 TEST_TEAR_DOWN	test/beacon_tests.c	/^TEST_TEAR_DOWN(beacon) {$/;"	f
@@ -29,22 +32,31 @@ all_intersections	src/beacon.c	/^COORD_LIST *all_intersections(SENSOR ** sensors
 append_coord_lists	src/beacon.c	/^COORD_LIST *append_coord_lists(COORD_LIST *l, COORD_LIST *m) {$/;"	f
 beacon	src/beacon.h	/^    COORD beacon;$/;"	m	struct:__anon1
 beacon	test/beacon_tests.c	/^TEST_GROUP(beacon);$/;"	v
+can_be_excluded	src/beacon.c	/^bool can_be_excluded(COORD pos, SENSOR **sensors, int count) {$/;"	f
 compare_coords	src/beacon.c	/^int compare_coords(const void *p, const void *q) {$/;"	f
 coord	src/beacon.c	/^COORD coord(int x, int y) {$/;"	f
 coord	src/beacon.h	/^    COORD coord;$/;"	m	struct:coord_list
 coord	src/beacon.h	/^typedef struct coord {$/;"	s
 coord_list	src/beacon.h	/^typedef struct coord_list {$/;"	s
+count	test/beacon_tests.c	/^int count = 14;$/;"	v
 destroy_coord_list	src/beacon.c	/^void destroy_coord_list(COORD_LIST *list) {$/;"	f
 destroy_sensor	src/beacon.c	/^void destroy_sensor(SENSOR *s) {$/;"	f
 equal_coords	src/beacon.c	/^bool equal_coords(COORD a, COORD b) {$/;"	f
+excluded_in_row	src/beacon.c	/^int excluded_in_row(SENSOR **sensors, int count, int row) {$/;"	f
+include	test/beacon_tests.c	/^bool include(COORD_LIST *list, COORD coord) {$/;"	f
 insert_coord	src/beacon.c	/^COORD_LIST *insert_coord(COORD_LIST *list, COORD coord) {$/;"	f
+interesting	src/beacon.c	/^bool interesting(COORD pos, SENSOR **sensors, int count) {$/;"	f
+interesting_coords	src/beacon.c	/^COORD_LIST *interesting_coords(SENSOR **sensors, int count) {$/;"	f
 intersections	src/beacon.c	/^COORD_LIST *intersections(SENSOR *s, SENSOR *t) {$/;"	f
+limits	src/beacon.c	/^void limits(SENSOR **sensors, int count, COORD *cmin, COORD *cmax) {$/;"	f
 location	src/beacon.h	/^    COORD location;$/;"	m	struct:__anon1
 main	src/main.c	/^int main(int argc, char *argv[]) {$/;"	f
 main	test/all_tests.c	/^int main(int argc, const char *argv[])$/;"	f
 manhattan_distance	src/beacon.c	/^int manhattan_distance(COORD a, COORD b) {$/;"	f
 next	src/beacon.h	/^    struct coord_list *next;$/;"	m	struct:coord_list	typeref:struct:coord_list::coord_list
 perimeter	src/beacon.h	/^    COORD *perimeter;$/;"	m	struct:__anon1
+print_sensors	test/beacon_tests.c	/^void print_sensors(SENSOR **sensors, int count) {$/;"	f
 sensor	src/beacon.c	/^SENSOR *sensor(COORD p, COORD b) {$/;"	f
+sensors	test/beacon_tests.c	/^SENSOR *sensors[14];$/;"	v
 x	src/beacon.h	/^    int x;$/;"	m	struct:coord
 y	src/beacon.h	/^    int y;$/;"	m	struct:coord

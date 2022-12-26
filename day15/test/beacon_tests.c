@@ -104,10 +104,11 @@ bool include(COORD_LIST *list, COORD coord) {
 }
 void print_sensors(SENSOR **sensors, int count) {
     COORD_LIST *is = interesting_coords(sensors, count);
-
+    COORD cmin, cmax;
+    limits(sensors, count, &cmin, &cmax);
     printf("\n");
-    for(int row = -15; row < 35; row++) {
-        for(int col = -15; col < 35; col++) {
+    for(int row = cmin.y; row < cmax.y; row++) {
+        for(int col = cmin.x; col < cmax.x; col++) {
             char c = '.';
             for(int i=0; i < count; i++) {
                 SENSOR *s = sensors[i];
@@ -153,4 +154,12 @@ TEST(beacon, interesting_intersections) {
     }
     printf("\n");
     destroy_coord_list(l);
+}
+TEST(beacon, find_limits) {
+    COORD cmin, cmax;
+    limits(sensors, count, &cmin, &cmax);
+    printf("(%d,%d) (%d,%d)\n", cmin.x, cmin.y, cmax.x, cmax.y);
+}
+TEST(beacon, solution_1) {
+    TEST_ASSERT_EQUAL_INT(26, excluded_in_row(sensors, count, 10));
 }

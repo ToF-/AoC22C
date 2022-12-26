@@ -27,5 +27,7 @@ COORD_LIST *insert_coord(COORD_LIST *, COORD);
 COORD_LIST *append_coord_lists(COORD_LIST *, COORD_LIST *);
 COORD_LIST *all_intersections(SENSOR **, int);
 COORD_LIST *interesting_coords(SENSOR **, int);
+void limits(SENSOR **, int, COORD *, COORD *);
+int excluded_in_row(SENSOR **, int, int);
 
 
