@@ -134,6 +134,8 @@ bool can_be_excluded(COORD pos, SENSOR **sensors, int count) {
     return false;
 }
 bool interesting(COORD pos, SENSOR **sensors, int count) {
+    if(pos.x < 0 || pos.x > 4000000 || pos.y < 0 || pos.y > 4000000)
+        return false;
     COORD adjacent[4] = {
         (COORD) { .x = pos.x, .y = pos.y+1 },
         (COORD) { .x = pos.x, .y = pos.y-1 },

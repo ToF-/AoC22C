@@ -179,14 +179,34 @@ TEST(beacon, intersections_between_all_sensors) {
 TEST(beacon, interesting_intersections) {
     COORD_LIST *l = interesting_coords(sample, sample_count);
     COORD_LIST *c = l;
-    printf("interesting:\n");
+    printf("interesting in sample:\n");
     while(c) {
         printf("(%d,%d) ", c->coord.x, c->coord.y);
         c = c->next;
     }
     printf("\n");
+    COORD target = l->coord;
+    destroy_coord_list(l);
+    TEST_ASSERT_EQUAL_INT(56000011, target.x * 4000000 + target.y);
+    l = interesting_coords(puzzle, puzzle_count);
+    c = l;
+    printf("interesting in puzzle:\n");
+    while(c) {
+        printf("(%d,%d) ", c->coord.x, c->coord.y);
+        c = c->next;
+    }
+    printf("\n");
+    target = l->coord;
+    TEST_ASSERT_EQUAL_INT(3340224,target.x);
+    TEST_ASSERT_EQUAL_INT(3249595, target.y);
+    long lx = target.x;
+    long ly = target.y;
+    long freq = lx * 4000000 + ly;
+    printf("%ld\n", freq);
+    TEST_ASSERT_TRUE(13360899249595L == freq);
     destroy_coord_list(l);
 }
+
 TEST(beacon, find_limits) {
     COORD cmin, cmax;
     limits(sample, sample_count, &cmin, &cmax);
