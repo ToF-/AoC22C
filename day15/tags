@@ -7,41 +7,44 @@
 CFLAGS	makefile	/^CFLAGS = -O0 -g -std=c11 -pedantic$/;"	m
 CLEANUP	makefile	/^CLEANUP = rm -f$/;"	m
 COORD	src/beacon.h	/^} COORD;$/;"	t	typeref:struct:coord
+COORD_LIST	src/beacon.h	/^} COORD_LIST;$/;"	t	typeref:struct:coord_list
 C_COMPILER	makefile	/^C_COMPILER=clang$/;"	m
 C_COMPILER	makefile	/^C_COMPILER=gcc$/;"	m
 INC_DIRS	makefile	/^INC_DIRS=-Isrc -I$(UNITY_ROOT)\/src -I$(UNITY_ROOT)\/extras\/fixture\/src -I$(UNITY_ROOT)\/extras\/memory\/src$/;"	m
-LINE_SIZE	src/beacon.c	/^const int LINE_SIZE = 200;$/;"	v
 MAIN	makefile	/^MAIN=a.out$/;"	m
 RunAllTests	test/all_tests.c	/^static void RunAllTests(void)$/;"	f	file:
 SENSOR	src/beacon.h	/^} SENSOR;$/;"	t	typeref:struct:__anon1
 SRC_FILES	makefile	/^SRC_FILES=$(UNITY_ROOT)\/src\/unity.c $(UNITY_ROOT)\/extras\/fixture\/src\/unity_fixture.c  $(UNITY_ROOT)\/extras\/memory\/src\/unity_memory.c test\/beacon_tests.c test\/test_runner.c test\/all_tests.c src\/beacon.c$/;"	m
 TARGET	makefile	/^TARGET=test.out a.out$/;"	m
 TEST	makefile	/^TEST=test.out$/;"	m
-TEST	test/beacon_tests.c	/^TEST(beacon, excluded) {$/;"	f
-TEST	test/beacon_tests.c	/^TEST(beacon, excluded_positions) {$/;"	f
-TEST	test/beacon_tests.c	/^TEST(beacon, get_puzzle) {$/;"	f
-TEST	test/beacon_tests.c	/^TEST(beacon, get_sensor) {$/;"	f
-TEST	test/beacon_tests.c	/^TEST(beacon, solve_puzzle_part1) {$/;"	f
+TEST	test/beacon_tests.c	/^TEST(beacon, append_two_coordlists) {$/;"	f
+TEST	test/beacon_tests.c	/^TEST(beacon, intersections_between_all_sensors) {$/;"	f
+TEST	test/beacon_tests.c	/^TEST(beacon, intersections_between_two_sensors) {$/;"	f
+TEST	test/beacon_tests.c	/^TEST(beacon, sensor_characteristics) {$/;"	f
 TEST_GROUP_RUNNER	test/test_runner.c	/^TEST_GROUP_RUNNER(beacon) {$/;"	f
 TEST_SETUP	test/beacon_tests.c	/^TEST_SETUP(beacon) {$/;"	f
 TEST_TEAR_DOWN	test/beacon_tests.c	/^TEST_TEAR_DOWN(beacon) {$/;"	f
 UNITY_ROOT	makefile	/^UNITY_ROOT=..\/unity$/;"	m
-abs	src/beacon.c	/^int abs(int x) {$/;"	f
+all_intersections	src/beacon.c	/^COORD_LIST *all_intersections(SENSOR ** sensors, int count) {$/;"	f
+append_coord_lists	src/beacon.c	/^COORD_LIST *append_coord_lists(COORD_LIST *l, COORD_LIST *m) {$/;"	f
 beacon	src/beacon.h	/^    COORD beacon;$/;"	m	struct:__anon1
 beacon	test/beacon_tests.c	/^TEST_GROUP(beacon);$/;"	v
-coord	src/beacon.h	/^    COORD coord;$/;"	m	struct:__anon1
+compare_coords	src/beacon.c	/^int compare_coords(const void *p, const void *q) {$/;"	f
+coord	src/beacon.c	/^COORD coord(int x, int y) {$/;"	f
+coord	src/beacon.h	/^    COORD coord;$/;"	m	struct:coord_list
 coord	src/beacon.h	/^typedef struct coord {$/;"	s
-distance	src/beacon.c	/^int distance(SENSOR sensor) {$/;"	f
-excluded	src/beacon.c	/^bool excluded(SENSOR sensor, int x, int y) {$/;"	f
-excluded_positions	src/beacon.c	/^int excluded_positions(SENSOR *sensors, int count, int row) {$/;"	f
-get_puzzle	src/beacon.c	/^int get_puzzle(SENSOR *sensors, char *filename) {$/;"	f
-get_sensor	src/beacon.c	/^SENSOR get_sensor(char *line) {$/;"	f
+coord_list	src/beacon.h	/^typedef struct coord_list {$/;"	s
+destroy_coord_list	src/beacon.c	/^void destroy_coord_list(COORD_LIST *list) {$/;"	f
+destroy_sensor	src/beacon.c	/^void destroy_sensor(SENSOR *s) {$/;"	f
+equal_coords	src/beacon.c	/^bool equal_coords(COORD a, COORD b) {$/;"	f
+insert_coord	src/beacon.c	/^COORD_LIST *insert_coord(COORD_LIST *list, COORD coord) {$/;"	f
+intersections	src/beacon.c	/^COORD_LIST *intersections(SENSOR *s, SENSOR *t) {$/;"	f
+location	src/beacon.h	/^    COORD location;$/;"	m	struct:__anon1
 main	src/main.c	/^int main(int argc, char *argv[]) {$/;"	f
 main	test/all_tests.c	/^int main(int argc, const char *argv[])$/;"	f
-max	src/beacon.c	/^int max(int a, int b) {$/;"	f
-md	src/beacon.c	/^int md(COORD c0, COORD c1) {$/;"	f
-min	src/beacon.c	/^int min(int a, int b) {$/;"	f
-scan_sensors	src/beacon.c	/^int scan_sensors(SENSOR *sensors, int count, int selected, int xmin, int ymin, int xmax, int ymax) {$/;"	f
-sensor	test/beacon_tests.c	/^SENSOR sensor;$/;"	v
+manhattan_distance	src/beacon.c	/^int manhattan_distance(COORD a, COORD b) {$/;"	f
+next	src/beacon.h	/^    struct coord_list *next;$/;"	m	struct:coord_list	typeref:struct:coord_list::coord_list
+perimeter	src/beacon.h	/^    COORD *perimeter;$/;"	m	struct:__anon1
+sensor	src/beacon.c	/^SENSOR *sensor(COORD p, COORD b) {$/;"	f
 x	src/beacon.h	/^    int x;$/;"	m	struct:coord
 y	src/beacon.h	/^    int y;$/;"	m	struct:coord

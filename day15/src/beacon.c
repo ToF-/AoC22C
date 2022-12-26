@@ -6,92 +6,143 @@
 #include "beacon.h"
 #include <limits.h>
 
-int abs(int x) {
-    return x < 0 ? -x : x;
+int manhattan_distance(COORD a, COORD b) {
+    return abs(b.x - a.x) + abs(b.y - a.y);
+}
+int compare_coords(const void *p, const void *q) {
+    COORD a = *((COORD *) p);
+    COORD b = *((COORD *) q);
+    if(a.x == b.x)
+        return a.y - b.y;
+    else
+        return a.x - b.x;
 }
 
-int md(COORD c0, COORD c1) {
-    return abs(c1.x - c0.x) + abs(c1.y - c0.y);
-}
-
-int distance(SENSOR sensor) {
-    return md(sensor.coord, sensor.beacon);
-}
-bool excluded(SENSOR sensor, int x, int y) {
-    if(x == sensor.beacon.x && y == sensor.beacon.y)
-        return false;
-    return md(sensor.coord, (COORD) { .x = x, .y = y }) <= distance(sensor);
-}
-bool excluded_all(SENSOR *sensors, int count, int x, int y) {
-    for(int i=0; i<count; i++) {
-        if(excluded(sensors[i], x, y))
-            return true;
-    }
-    return false;
-}
-
-int min(int a, int b) {
-    return a < b ? a : b;
-}
-
-int max(int a, int b) {
-    return a > b ? a : b;
-}
-
-int excluded_positions(SENSOR *sensors, int count, int row) {
-    int xmin = INT_MAX;
-    int xmax = INT_MIN;
-    int ymin = INT_MAX;
-    int ymax = INT_MIN;
-    for(int i=0; i<count; i++) {
-        SENSOR s = sensors[i];
-        int d = distance(s);
-        xmin = min(xmin, s.coord.x - d);
-        ymin = min(ymin, s.coord.y - d);
-        xmax = max(xmax, s.coord.x + d);
-        ymax = max(ymax, s.coord.y + d);
-    }
-    printf("%d,%d %d,%d\n", xmin, ymin, xmax, ymax);
-    int result = 0;
-    for(int x = xmin; x <= xmax; x++) 
-        result += excluded_all(sensors, count, x, row);
-    return result;
-}
-
-SENSOR get_sensor(char *line) {
-    char *buffer = strdup(line);
-    for(int i=0; i<strlen(buffer); i++) {
-        char c = buffer[i];
-        if(!isdigit(c) && c != '-')
-            buffer[i] = ' ';
-    }
-    SENSOR sensor;
-    char *token = strtok(buffer, " ");
-    sensor.coord.x = atoi(token);
-    token = strtok(NULL, " ");
-    sensor.coord.y = atoi(token);
-    token = strtok(NULL, " ");
-    sensor.beacon.x = atoi(token);
-    token = strtok(NULL, " ");
-    sensor.beacon.y = atoi(token);
-    free(buffer);
-    return sensor;
-}
-
-const int LINE_SIZE = 200;
-
-int get_puzzle(SENSOR *sensors, char *filename) {
-    FILE *puzzle_file = fopen(filename, "r");
-    assert(puzzle_file);
-    char line[LINE_SIZE];
+SENSOR *sensor(COORD p, COORD b) {
+    assert(! equal_coords(p, b));
+    SENSOR *s = (SENSOR *)malloc(sizeof(SENSOR));
+    s->location = p;
+    s->beacon = b;
+    int r = manhattan_distance(s->location, s->beacon);
+    s->perimeter = (COORD *)malloc(sizeof(COORD) * r * 4);
     int count = 0;
-    while(fgets(line, LINE_SIZE, puzzle_file)) {
-        int l =strcspn(line,"\n");
-        line[l]='\0';
-        sensors[count++] = get_sensor(line);
-    }
-    fclose(puzzle_file);
-    return count;
+    for(int x = -r, y = 0; x < 0; x++, y++)
+        s->perimeter[count++] = coord(s->location.x + x, s->location.y + y);
+    for(int x = 0, y = r; x < r; x++, y--)
+        s->perimeter[count++] = coord(s->location.x + x, s->location.y + y);
+    for(int x = r, y = 0; x > 0; x--, y--)
+        s->perimeter[count++] = coord(s->location.x + x, s->location.y + y);
+    for(int x = 0, y =-r; x >-r; x--, y++) 
+        s->perimeter[count++] = coord(s->location.x + x, s->location.y + y);
+    qsort(s->perimeter, r * 4, sizeof(COORD), compare_coords);
+    return s;
 }
 
+COORD coord(int x, int y) {
+    return (COORD) { .x = x, .y = y };
+}
 
+bool equal_coords(COORD a, COORD b) {
+    return (a.x == b.x) && (a.y == b.y);
+}
+
+void destroy_sensor(SENSOR *s) {
+    free(s->perimeter);
+    free(s);
+}
+
+COORD_LIST *intersections(SENSOR *s, SENSOR *t) {
+    assert(s);
+    assert(t);
+    COORD_LIST *list = NULL;
+    COORD_LIST *current = NULL;
+    int sp_count = manhattan_distance(s->location, s->beacon) * 4;
+    int tp_count = manhattan_distance(t->location, t->beacon) * 4;
+    for(int i=0, j=0; i < sp_count && j < tp_count; ) {
+        int cmp = compare_coords(&s->perimeter[i], &t->perimeter[j]);
+        if(cmp == 0) {
+            list = insert_coord(list, s->perimeter[i]);
+            i++;
+            j++;
+        } else if(cmp < 0)
+            i++;
+        else 
+            j++;
+    }
+    return list;
+}
+
+void destroy_coord_list(COORD_LIST *list) {
+    if(!list)
+        return;
+    destroy_coord_list(list->next);
+    free(list);
+}
+
+COORD_LIST *insert_coord(COORD_LIST *list, COORD coord) {
+    COORD_LIST *new = (COORD_LIST *)malloc(sizeof(COORD_LIST));
+    new->coord = coord;
+    new->next = NULL;
+    if(list) 
+        new->next = list;
+    return new;
+}
+
+COORD_LIST *append_coord_lists(COORD_LIST *l, COORD_LIST *m) {
+    if(!l)
+        return m;
+    if(!m)
+        return l;
+    COORD_LIST *cl = l;
+    while(cl->next)
+        cl = cl->next;
+    cl->next = m;
+    return l;
+}
+
+COORD_LIST *all_intersections(SENSOR ** sensors, int count) {
+    COORD_LIST *l = NULL;
+    for(int i = 0; i < count - 1; i++) {
+        for(int j = i+1; j < count; j++) {
+            COORD_LIST *is = intersections(sensors[i], sensors[j]);
+            l = append_coord_lists(l, is);
+        }
+    }
+    return l;
+}
+
+bool interesting(COORD pos, SENSOR **sensors, int count) {
+    for(int i = 0; i < count; i++) {
+        SENSOR *s = sensors[i];
+        if(equal_coords(pos, s->location))
+            return false;
+        if(equal_coords(pos, s->beacon))
+            return false;
+        int r = manhattan_distance(s->location, s->beacon);
+        int p = manhattan_distance(pos, s->location);
+        if(p <= r)
+            return false;
+    }
+    return true;
+}
+COORD_LIST *interesting_coords(SENSOR **sensors, int count) {
+    COORD_LIST *l = all_intersections(sensors, count);
+    COORD_LIST *i = NULL;
+    while(l) {
+        COORD pos = l->coord;
+        COORD n = coord(pos.x, pos.y+1);
+        COORD s = coord(pos.x, pos.y-1);
+        COORD e = coord(pos.x+1, pos.y);
+        COORD w = coord(pos.x-1, pos.y);
+        if(interesting(n, sensors, count))
+            i = insert_coord(i, n);
+        if(interesting(s, sensors, count))
+            i = insert_coord(i, s);
+        if(interesting(e, sensors, count))
+            i = insert_coord(i, e);
+        if(interesting(w, sensors, count))
+            i = insert_coord(i, w);
+        l = l->next;
+    }
+    return i;
+}
