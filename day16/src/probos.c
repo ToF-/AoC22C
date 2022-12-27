@@ -26,6 +26,7 @@ void scan_device(VALVE *valves, char *line) {
     char *token = strtok(buffer, " ");
     ID id = valve_id(token);
     token = strtok(NULL, " ");
+    valves[id].closed = true;
     valves[id].flow_rate = atoi(token);
     while((token = strtok(NULL, " "))) {
         valves[id].tunnels[valves[id].tunnel_count++] = valve_id(token);
@@ -99,6 +100,12 @@ void *extract_max(MAX_HEAP *heap) {
     heap->count--;
     heapify(heap, 1);
     return min_value;
+}
+
+int compare(const void *pa, const void *pb) {
+    VALVE *va = (VALVE *)pa;
+    VALVE *vb = (VALVE *)pb;
+    return va->flow_rate - vb->flow_rate;
 }
 
 MAX_HEAP *new_max_heap(int capacity, int (*compare)(void *, void *)) {

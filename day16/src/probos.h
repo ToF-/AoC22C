@@ -2,6 +2,7 @@
 
 typedef int ID;
 typedef struct {
+    bool closed;
     int flow_rate;
     int tunnel_count;
     ID tunnels[5];

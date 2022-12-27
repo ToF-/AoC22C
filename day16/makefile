@@ -1,4 +1,4 @@
-CFLAGS = -O0 -g -std=c11 -pedantic
+CFLAGS = 
 CLEANUP = rm -f
 
 C_COMPILER=gcc

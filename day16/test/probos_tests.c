@@ -26,7 +26,12 @@ TEST(probos, add_valve) {
     int DD = valve_id("DD");
     int II = valve_id("II");
     int BB = valve_id("BB");
+    TEST_ASSERT_EQUAL_INT(0, valves[AA].flow_rate);
+    TEST_ASSERT_TRUE(valves[AA].closed);
     TEST_ASSERT_EQUAL_INT(3, valves[AA].tunnel_count);
+    TEST_ASSERT_EQUAL_INT(DD, valves[AA].tunnels[0]);
+    TEST_ASSERT_EQUAL_INT(II, valves[AA].tunnels[1]);
+    TEST_ASSERT_EQUAL_INT(BB, valves[AA].tunnels[2]);
 }
 
 int compare_ints(void *vpa, void *vpb) {
@@ -65,5 +70,8 @@ TEST(probos, max_heap_adding_and_extracting) {
     result = (int *)extract_max(heap);
     TEST_ASSERT_EQUAL_INT(5, *result);
     destroy_max_heap(heap,false);
+}
+
+TEST(probos, adjacent_valves) {
 }
 
