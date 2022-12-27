@@ -6,6 +6,8 @@
 #include <stdbool.h>
 #include "probos.h"
 
+const int CAPACITY = 26 * 26 ;
+
 int valve_id(char *name) {
     char t = name[0];
     char u = name[1];
@@ -26,8 +28,13 @@ void scan_device(VALVE *valves, char *line) {
     char *token = strtok(buffer, " ");
     ID id = valve_id(token);
     token = strtok(NULL, " ");
+    valves[id].id = id;
+    valves[id].predecessor = -1;
     valves[id].closed = true;
     valves[id].flow_rate = atoi(token);
+    valves[id].tunnel_count = 0;
+    for(int i = 0; i < 5; i++)
+        valves[id].tunnels[i] = -1;
     while((token = strtok(NULL, " "))) {
         valves[id].tunnels[valves[id].tunnel_count++] = valve_id(token);
     }
@@ -102,7 +109,7 @@ void *extract_max(MAX_HEAP *heap) {
     return min_value;
 }
 
-int compare(const void *pa, const void *pb) {
+int compare_valves(void *pa, void *pb) {
     VALVE *va = (VALVE *)pa;
     VALVE *vb = (VALVE *)pb;
     return va->flow_rate - vb->flow_rate;
@@ -123,6 +130,49 @@ void destroy_max_heap(MAX_HEAP *heap, bool destroy_values) {
     }
     free(heap->values);
     free(heap);
+}
+
+SOLVER *new_solver(VALVE *valves) {
+    SOLVER *solver = (SOLVER *)malloc(sizeof(SOLVER));
+    solver->valves = valves;
+    solver->max_heap = new_max_heap(CAPACITY, compare_valves);
+    return solver;
+}
+
+void print_valve(VALVE *valve) {
+    assert(valve);
+    printf("valve %c%c ", (valve->id/26)+'A', (valve->id%26)+'A');
+    printf(" flow rate:%d ",valve->flow_rate);
+    if(valve->predecessor != -1)
+        printf(" predecessor: %c%c ", (valve->predecessor/26)+'A', (valve->predecessor%26)+'A');
+    else
+        printf(" no predecessor    ");
+    printf("tunnels to: ");
+    for(int i = 0; i<valve->tunnel_count; i++) {
+        printf("%c%c ", (valve->tunnels[i]/26)+'A', (valve->tunnels[i]%26)+'A');
+    }
+    printf("\n");
+}
+
+void find_adjacent_valves(SOLVER *solver) {
+    assert(solver->max_heap->count);
+    VALVE *valve=extract_max(solver->max_heap);
+    assert(valve);
+    print_valve(valve);
+    valve->closed = false;
+    for(int i = 0; i < valve->tunnel_count; i++) {
+        int id = valve->tunnels[i];
+        VALVE *adjacent = &solver->valves[id];
+        if(adjacent->closed) {
+            adjacent->flow_rate += valve->flow_rate;
+            add(solver->max_heap, adjacent);
+        }
+    }
+}
+
+void destroy_solver(SOLVER *solver) {
+    destroy_max_heap(solver->max_heap, false);
+    free(solver);
 }
 
 
