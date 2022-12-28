@@ -1,0 +1,24 @@
+digraph {
+    "AA\n0" -> "DD\n20" [label="(0),54"]
+    "AA\n0" -> "II\n0"  [label="33"] 
+    "AA\n0" -> "BB\n13" 
+    "BB\n13" -> "CC\n2" 
+    "BB\n13" -> "AA\n0" [label="33"]
+    "CC\n2" -> "DD\n20" [label="81"]
+    "CC\n2" -> "BB\n13" [label="20"]
+    "DD\n20" -> "CC\n2" [label="(20),79"]
+    "DD\n20" -> "AA\n0"
+    "DD\n20" -> "EE\n3" [label="54"]
+    "EE\n3" -> "FF\n0"  [label="54"]
+    "EE\n3" -> "DD\n20" [label="79"]
+    "FF\n0" -> "EE\n3" [label="76"]
+    "FF\n0" -> "GG\n0" [label="54"]
+    "GG\n0" -> "FF\n0" [label="76"]
+    "GG\n0" -> "HH\n22" [label="54"]
+    "HH\n22" -> "GG\n0" [label="76"]
+    "II\n0" -> "AA\n0"  [label="54"]
+    "II\n0" -> "JJ\n21" [label="33"]
+    "JJ\n21" -> "II\n0" [label="54"]
+
+
+}

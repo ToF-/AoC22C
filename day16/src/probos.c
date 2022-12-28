@@ -163,7 +163,9 @@ void find_adjacent_valves(SOLVER *solver) {
     for(int i = 0; i < valve->tunnel_count; i++) {
         int id = valve->tunnels[i];
         VALVE *adjacent = &solver->valves[id];
-        if(adjacent->closed) {
+        if(!adjacent->closed)
+            continue;
+        if(adjacent->flow_rate + valve->flow
             adjacent->flow_rate += valve->flow_rate;
             add(solver->max_heap, adjacent);
         }
