@@ -1,0 +1,55 @@
+digraph {
+    "goto AA\n0" [fontname="Courier New"]
+    "goto BB\n0" [fontname="Courier New"]
+    "goto CC\n0" [fontname="Courier New"]
+    "goto DD\n0" [fontname="Courier New"]
+    "goto EE\n0" [fontname="Courier New"]
+    "goto FF\n0" [fontname="Courier New"]
+    "goto GG\n0" [fontname="Courier New"]
+    "goto HH\n0" [fontname="Courier New"]
+    "goto II\n0" [fontname="Courier New"]
+    "goto JJ\n0" [fontname="Courier New"]
+    "open BB\n13" [fontname="Courier New"]
+    "open CC\n2" [fontname="Courier New"]
+    "open DD\n20" [fontname="Courier New"]
+    "open EE\n3" [fontname="Courier New"]
+    "open HH\n22" [fontname="Courier New"]
+    "open JJ\n21" [fontname="Courier New"]
+    "goto AA\n0" -> "goto DD\n0"
+    "goto AA\n0" -> "goto II\n0"
+    "goto AA\n0" -> "goto BB\n0"
+    "goto BB\n0" -> "goto CC\n0"
+    "goto BB\n0" -> "open BB\n13"
+    "open BB\n13" -> "goto AA\n0"
+    "open BB\n13" -> "goto CC\n0"
+    "goto BB\n0" -> "goto AA\n0"
+    "goto CC\n0" -> "goto DD\n0"
+    "goto CC\n0" -> "goto BB\n0"
+    "goto CC\n0" -> "open CC\n2"
+    "open CC\n2" -> "goto DD\n0"
+    "open CC\n2" -> "goto BB\n0"
+    "goto DD\n0" -> "goto AA\n0"
+    "goto DD\n0" -> "goto CC\n0"
+    "goto DD\n0" -> "goto EE\n0"
+    "goto DD\n0" -> "open DD\n20"
+    "open DD\n20" -> "goto CC\n0"
+    "open DD\n20" -> "goto AA\n0"
+    "open DD\n20" -> "goto EE\n0"
+    "goto EE\n0" -> "goto DD\n0"
+    "goto EE\n0" -> "goto FF\n0"
+    "goto EE\n0" -> "open EE\n3"
+    "open EE\n3" -> "goto DD\n0"
+    "open EE\n3" -> "goto FF\n0"
+    "goto FF\n0" -> "goto EE\n0"
+    "goto FF\n0" -> "goto GG\n0"
+    "goto GG\n0" -> "goto FF\n0"
+    "goto GG\n0" -> "goto HH\n0"
+    "goto HH\n0" -> "goto GG\n0"
+    "goto HH\n0" -> "open HH\n22"
+    "open HH\n22" -> "goto GG\n0"
+    "goto II\n0" -> "goto AA\n0"
+    "goto II\n0" -> "goto JJ\n0"
+    "goto JJ\n0" -> "goto II\n0"
+    "goto JJ\n0" -> "open JJ\n21"
+    "open JJ\n21" -> "goto II\n0"
+}
