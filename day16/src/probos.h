@@ -1,35 +1,11 @@
 #include <stdbool.h>
-
-typedef int ID;
-typedef struct {
-    ID id;
-    bool closed;
-    ID predecessor;
-    int flow_rate;
-    int tunnel_count;
-    ID tunnels[5];
-} VALVE;
+#define MAX_IDS (26*26)
 
 typedef struct {
-    void **values;
-    int (* compare)(void *, void *);
-    int count;
-    int capacity;
-} MAX_HEAP;
+    char *ids[MAX_IDS];
+    int  max_id;
+} SOLVER;
 
-typedef struct {
-    VALVE *valves;
-    MAX_HEAP *max_heap;
-}SOLVER;
-
-ID valve_id(char *);
-void scan_device(VALVE *, char *);
-MAX_HEAP *new_max_heap(int capacity, int (* compare)(void *,void *));
-void add(MAX_HEAP *heap, void *value);
-void destroy_max_heap(MAX_HEAP *heap, bool destroy_values);
-void *extract_max(MAX_HEAP *heap);
-int compare_valves(void *, void *);
-SOLVER *new_solver(VALVE *);
-void find_adjacent_valves(SOLVER *);
+SOLVER *new_solver();
+int id(SOLVER *, char *tag);
 void destroy_solver(SOLVER *);
-void print_valve(VALVE *);
