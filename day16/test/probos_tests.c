@@ -36,25 +36,30 @@ TEST(probos, id) {
 
 TEST(probos, scan) {
     solver = new_solver();
-    for(int i=0; i<solver->max_id; i++) {
-        for(int j=0; j<solver->max_id; j++) {
-            printf("%d\t", solver->dist[i][j]);
-        }
-        printf("\n");
-    }
     scan_sample(solver);
     calc_distances(solver);
     for(int i=0; i<solver->max_id; i++) {
         for(int j=0; j<solver->max_id; j++) {
-            printf("%d\t", solver->dist[i][j]);
+            printf("(%s,%s=%d)\t", solver->valves[i]->tag, solver->valves[j]->tag, solver->dist[i][j]);
         }
         printf("\n");
     }
     TEST_ASSERT_EQUAL_INT(10, solver->max_id);
     TEST_ASSERT_EQUAL_INT(0, get_index(solver, "AA"));
     TEST_ASSERT_EQUAL_INT(0, solver->valves[get_index(solver, "AA")]->rate);
+    for(int i=0; i<solver->max_id; i++) {
+        VALVE *v = solver->valves[i];
+        char *tag = v->tag;
+        TEST_ASSERT_EQUAL_INT(get_index(solver, tag), i);
+        printf("%d:%s\t", i, solver->valves[i]->tag);
+    }
+    printf("\n");
     TEST_ASSERT_EQUAL_INT(1, solver->dist[get_index(solver, "AA")][get_index(solver,"DD")]);
     TEST_ASSERT_EQUAL_INT(1, solver->dist[get_index(solver, "DD")][get_index(solver,"AA")]);
-    TEST_ASSERT_EQUAL_INT(1, solver->dist[get_index(solver, "AA")][get_index(solver,"JJ")]);
+    TEST_ASSERT_EQUAL_INT(2, solver->dist[get_index(solver, "AA")][get_index(solver,"JJ")]);
+    for(int i=0; i<solver->max_non_zero; i++) {
+        printf("%s:%d\t", solver->valves[solver->non_zero[i]]->tag, solver->valves[solver->non_zero[i]]->rate);
+    }
+    printf("\n");
     destroy_solver(solver);
 }

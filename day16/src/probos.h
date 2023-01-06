@@ -4,12 +4,15 @@
 typedef struct {
     int  rate;
     bool closed;
+    char tag[3];
 } VALVE;
 
 typedef struct {
     int ids[MAX_IDS];
     int max_id;
     VALVE *valves[MAX_IDS];
+    int non_zero[MAX_IDS];
+    int max_non_zero;
     int dist[MAX_IDS][MAX_IDS];
 } SOLVER;
 

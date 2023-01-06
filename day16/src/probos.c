@@ -8,8 +8,11 @@
 #include "probos.h"
 
 const int MAX_DISTANCE = 10000;
+
 SOLVER *new_solver() {
     SOLVER *solver = (SOLVER *)malloc(sizeof(SOLVER));
+    solver->max_id = 0;
+    solver->max_non_zero = 0;
     for(int i=0; i < MAX_IDS; i++)
         for(int j=0; j < MAX_IDS; j++)
             solver->dist[i][j] = MAX_DISTANCE;
@@ -48,10 +51,14 @@ void scan_device(SOLVER *solver, char *line) {
     remove_non_upper_nor_digits(buffer);
     char *token = strtok(buffer, SEPS);
     int v = get_index(solver, token);
-    int rate = atoi(strtok(NULL, SEPS));
     solver->valves[v] = (VALVE *)malloc(sizeof(VALVE));
+    strcpy(solver->valves[v]->tag, token);
+    int rate = atoi(strtok(NULL, SEPS));
     solver->valves[v]->closed = true;
     solver->valves[v]->rate   = rate;
+    if(rate > 0) 
+        solver->non_zero[solver->max_non_zero++] = v;
+    solver->dist[v][v] = 0;
     while((token = strtok(NULL, SEPS))!=NULL) {
         int w = get_index(solver, token);
         solver->dist[v][w] = 1;
