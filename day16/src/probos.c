@@ -47,6 +47,8 @@ void remove_non_upper_nor_digits(char *buffer) {
 const char *SEPS = " ";
 
 void scan_device(SOLVER *solver, char *line) {
+    assert(strlen(line) > 0);
+    assert(solver);
     char *buffer = strdup(line);
     remove_non_upper_nor_digits(buffer);
     char *token = strtok(buffer, SEPS);
@@ -82,4 +84,19 @@ void destroy_solver(SOLVER *solver) {
         free(solver->valves[i]);
     }
     free(solver);
+}
+
+void scan_file(SOLVER *solver, char *filename) {
+    assert(solver);
+    FILE *file = fopen(filename, "r");
+    assert(file);
+    static char line[1000];
+    while(fgets(line, 1000, file)) {
+        int l = strcspn(line, "\n");
+        line[l] = '\0';
+        char *buffer = strdup(line);
+        scan_device(solver, buffer);
+        free(buffer);
+    }
+    fclose(file);
 }

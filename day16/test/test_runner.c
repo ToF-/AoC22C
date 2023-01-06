@@ -3,5 +3,6 @@
 TEST_GROUP_RUNNER(probos) {
     RUN_TEST_CASE(probos, id);
     RUN_TEST_CASE(probos, scan);
+    RUN_TEST_CASE(probos, scan_file);
 }
 

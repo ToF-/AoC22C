@@ -21,3 +21,4 @@ int get_index(SOLVER *, char *);
 void scan_device(SOLVER *, char *);
 void calc_distances(SOLVER *);
 void destroy_solver(SOLVER *);
+void scan_file(SOLVER *, char *);

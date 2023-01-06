@@ -63,3 +63,20 @@ TEST(probos, scan) {
     printf("\n");
     destroy_solver(solver);
 }
+TEST(probos, scan_file) {
+    solver = new_solver();
+    scan_file(solver, "puzzle.txt");
+    calc_distances(solver);
+    for(int i=0; i<solver->max_id; i++) {
+        for(int j=0; j<solver->max_id; j++) {
+            printf("%2d ", solver->dist[i][j]);
+        }
+        printf("\n");
+    }
+    for(int i=0; i<solver->max_non_zero; i++) {
+        printf("%s:%d\t", solver->valves[solver->non_zero[i]]->tag, solver->valves[solver->non_zero[i]]->rate);
+    }
+    printf("\n");
+    TEST_ASSERT_EQUAL_INT(15, solver->max_non_zero);
+    destroy_solver(solver);
+}
