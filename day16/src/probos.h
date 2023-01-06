@@ -25,3 +25,4 @@ void scan_device(SOLVER *, char *);
 void calc_distances(SOLVER *);
 void destroy_solver(SOLVER *);
 void scan_file(SOLVER *, char *);
+int next_to_open(SOLVER *, int, int);

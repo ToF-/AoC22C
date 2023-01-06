@@ -8,6 +8,7 @@
 #include "probos.h"
 
 const int MAX_DISTANCE = 10000;
+static int p2s[16] = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536 };
 
 SOLVER *new_solver() {
     SOLVER *solver = (SOLVER *)malloc(sizeof(SOLVER));
@@ -99,4 +100,14 @@ void scan_file(SOLVER *solver, char *filename) {
         free(buffer);
     }
     fclose(file);
+}
+
+int next_to_open(SOLVER *solver, int state, int index) {
+    for(int i = index; i < solver->max_non_zero; i++) {
+        printf("%d\n",i);
+        int  pattern = p2s[i];
+        if(!(state & pattern))
+            return solver->non_zero[i];
+    }
+    return -1;
 }

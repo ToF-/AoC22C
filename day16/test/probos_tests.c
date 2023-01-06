@@ -80,3 +80,25 @@ TEST(probos, scan_file) {
     TEST_ASSERT_EQUAL_INT(15, solver->max_non_zero);
     destroy_solver(solver);
 }
+TEST(probos, pressure) {
+    solver = new_solver();
+    scan_file(solver, "sample.txt");
+    calc_distances(solver);
+    TEST_ASSERT_EQUAL_INT(6, solver->max_non_zero);
+    TEST_ASSERT_EQUAL_STRING("BB",  solver->valves[next_to_open(solver, 0, 0)]->tag);
+    TEST_ASSERT_EQUAL_STRING("CC",  solver->valves[next_to_open(solver, 0, 1)]->tag);
+    TEST_ASSERT_EQUAL_STRING("DD",  solver->valves[next_to_open(solver, 0, 2)]->tag);
+    TEST_ASSERT_EQUAL_STRING("EE",  solver->valves[next_to_open(solver, 0, 3)]->tag);
+    TEST_ASSERT_EQUAL_STRING("HH",  solver->valves[next_to_open(solver, 0, 4)]->tag);
+    TEST_ASSERT_EQUAL_STRING("JJ",  solver->valves[next_to_open(solver, 0, 5)]->tag);
+    TEST_ASSERT_EQUAL_STRING("CC",  solver->valves[next_to_open(solver, 1, 0)]->tag);
+    TEST_ASSERT_EQUAL_STRING("CC",  solver->valves[next_to_open(solver, 1, 1)]->tag);
+    TEST_ASSERT_EQUAL_STRING("DD",  solver->valves[next_to_open(solver, 1, 2)]->tag);
+    TEST_ASSERT_EQUAL_STRING("BB",  solver->valves[next_to_open(solver, 2, 0)]->tag);
+    TEST_ASSERT_EQUAL_STRING("DD",  solver->valves[next_to_open(solver, 2, 1)]->tag);
+    TEST_ASSERT_EQUAL_STRING("DD",  solver->valves[next_to_open(solver, 3, 0)]->tag);
+    TEST_ASSERT_EQUAL_STRING("HH",  solver->valves[next_to_open(solver, 15, 0)]->tag);
+    TEST_ASSERT_EQUAL_STRING("BB",  solver->valves[next_to_open(solver, 14, 0)]->tag);
+    TEST_ASSERT_EQUAL_INT(-1, next_to_open(solver, 65535, 0));
+    destroy_solver(solver);
+}
