@@ -1,5 +1,7 @@
 #include <stdbool.h>
 #define MAX_IDS (26*26)
+#define MAX_COMBINATION (32768)
+#define MAX_TIME (32)
 
 typedef struct {
     int  rate;
@@ -14,6 +16,7 @@ typedef struct {
     int non_zero[MAX_IDS];
     int max_non_zero;
     int dist[MAX_IDS][MAX_IDS];
+    int pressure[MAX_COMBINATION][MAX_TIME];
 } SOLVER;
 
 SOLVER *new_solver();
