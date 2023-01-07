@@ -122,16 +122,19 @@ int next_to_open(SOLVER *solver, int state, int index, int *next_index) {
 }
 
 void print_state(SOLVER *solver, int state) {
-    for(int i = solver->max_non_zero-1; i>=0; i--) {
-        char c = state & patterns[i] ? '1' : '0';
-        printf("%c",c);
+    for(int i = 0; i < solver->max_non_zero; i++) {
+        if(state & patterns[i]) {
+            int v = solver->non_zero[i];
+            char *tag = solver->valves[v]->tag;
+            printf("%s ", tag);
+        }
     }
 }
 
 int max_pressure(SOLVER *solver, int level, int state, int valve, int remaining_time, int pressure) {
+    if(remaining_time <= 0)
+        return pressure;
     int time = 31-remaining_time;
-    printf("%d ", time);
-    printf("%s ", solver->valves[valve]->tag);
     int index = 0;
     int next;
     int pressure_next = pressure + (solver->valves[valve]->rate * remaining_time);
@@ -145,19 +148,16 @@ int max_pressure(SOLVER *solver, int level, int state, int valve, int remaining_
         int next_valve = solver->non_zero[i];
         if(next_state != state) {
             int p;
-            if (solver->memo_pressure[state][time] != -1) {
-                p = solver->memo_pressure[state][time];
-                printf(".");
+            if (solver->memo_pressure[next_state][time] != -1) {
+                p = solver->memo_pressure[next_state][time];
             }
             else {
                 p =  max_pressure(solver, level+1, next_state, next_valve, remaining_time - (solver->dist[valve][next_valve]+1), pressure_next);
                 solver->memo_pressure[state][time] = p;
             }
-
             if(p > pressure_max)
                 pressure_max = p;
         }
     }
-    printf("%d\n", pressure_max);
     return pressure_max;
 }

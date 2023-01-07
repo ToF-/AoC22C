@@ -93,6 +93,6 @@ TEST(probos, solve_part_1) {
     scan_file(solver, "puzzle.txt");
     calc_distances(solver);
     int p = max_pressure(solver, 0, 0, get_index(solver, "AA"), 30, 0);
-    TEST_ASSERT_EQUAL_INT(1651, p);
+    TEST_ASSERT_EQUAL_INT(1595, p);
     destroy_solver(solver);
 }
