@@ -21,6 +21,7 @@ SRC_FILES	makefile	/^SRC_FILES=$(UNITY_ROOT)\/src\/unity.c $(UNITY_ROOT)\/extras
 TARGET	makefile	/^TARGET=test.out a.out$/;"	m
 TEST	makefile	/^TEST=test.out$/;"	m
 TEST	test/probos_tests.c	/^TEST(probos, id) {$/;"	f
+TEST	test/probos_tests.c	/^TEST(probos, max_pressure) {$/;"	f
 TEST	test/probos_tests.c	/^TEST(probos, pressure) {$/;"	f
 TEST	test/probos_tests.c	/^TEST(probos, scan) {$/;"	f
 TEST	test/probos_tests.c	/^TEST(probos, scan_file) {$/;"	f
@@ -38,12 +39,14 @@ ids	src/probos.h	/^    int ids[MAX_IDS];$/;"	m	struct:__anon2
 main	test/all_tests.c	/^int main(int argc, const char *argv[])$/;"	f
 max_id	src/probos.h	/^    int max_id;$/;"	m	struct:__anon2
 max_non_zero	src/probos.h	/^    int max_non_zero;$/;"	m	struct:__anon2
+max_pressure	src/probos.c	/^int max_pressure(SOLVER *solver, int level, int state, int valve, int remaining_time, int pressure) {$/;"	f
 min	src/probos.c	/^int min(int a, int b) {$/;"	f
 new_solver	src/probos.c	/^SOLVER *new_solver() {$/;"	f
-next_to_open	src/probos.c	/^int next_to_open(SOLVER *solver, int state, int index) {$/;"	f
+next_to_open	src/probos.c	/^int next_to_open(SOLVER *solver, int state, int index, int *next_index) {$/;"	f
 non_zero	src/probos.h	/^    int non_zero[MAX_IDS];$/;"	m	struct:__anon2
-p2s	src/probos.c	/^static int p2s[16] = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536 };$/;"	v	file:
+patterns	src/probos.c	/^static int patterns[16] = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768 };$/;"	v	file:
 pressure	src/probos.h	/^    int pressure[MAX_COMBINATION][MAX_TIME];$/;"	m	struct:__anon2
+print_state	src/probos.c	/^void print_state(SOLVER *solver, int state) {$/;"	f
 probos	test/probos_tests.c	/^TEST_GROUP(probos);$/;"	v
 rate	src/probos.h	/^    int  rate;$/;"	m	struct:__anon1
 remove_non_upper_nor_digits	src/probos.c	/^void remove_non_upper_nor_digits(char *buffer) {$/;"	f

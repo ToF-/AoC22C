@@ -16,7 +16,7 @@ typedef struct {
     int non_zero[MAX_IDS];
     int max_non_zero;
     int dist[MAX_IDS][MAX_IDS];
-    int pressure[MAX_COMBINATION][MAX_TIME];
+    int memo_pressure[MAX_COMBINATION][MAX_TIME];
 } SOLVER;
 
 SOLVER *new_solver();
@@ -26,4 +26,4 @@ void calc_distances(SOLVER *);
 void destroy_solver(SOLVER *);
 void scan_file(SOLVER *, char *);
 int next_to_open(SOLVER *, int, int, int *);
-int max_pressure(SOLVER *, int, int, int, int);
+int max_pressure(SOLVER *, int, int, int, int, int);
